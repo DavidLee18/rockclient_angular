@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { RockService } from './rock.service';
 
 @Component({
   selector: 'app-root',
