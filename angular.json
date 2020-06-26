@@ -121,5 +121,8 @@
       }
     }
   },
-  "defaultProject": "rockclient-angular"
+  "defaultProject": "rockclient-angular",
+  "cli": {
+    "analytics": "555cd839-8390-47a4-8883-e9091c83c9e2"
+  }
 }

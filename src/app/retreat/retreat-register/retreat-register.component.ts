@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { RockService, RetreatResume } from 'src/app/rock.service';
+import { RockService, RetreatResume } from '../../rock.service';
 import { Router } from '@angular/router';
-import { routeNames } from 'src/app/app-routing.module';
+import { routeNames } from '../../app-routing.module';
 import { retreatRouteNames } from '../retreat-routing.module';
-import { MatSnackBar } from '@angular/material';
 import { FormBuilder, Validators } from '@angular/forms';
 import { map, concatAll, pluck } from 'rxjs/operators';
 import { zip } from 'rxjs';

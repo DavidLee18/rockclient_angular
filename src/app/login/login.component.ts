@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { MatBottomSheet, MatBottomSheetRef, MatSnackBar } from '@angular/material';
+import { MatBottomSheet, MatBottomSheetRef } from '@angular/material/bottom-sheet';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { RockService } from '../rock.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { routeNames } from '../app-routing.module';

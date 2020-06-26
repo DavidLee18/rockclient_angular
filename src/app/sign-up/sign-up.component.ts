@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { RockService } from '../rock.service';
 import { routeNames } from '../app-routing.module';
 import { FormControl, Validators, ValidatorFn, AbstractControl, FormBuilder } from '@angular/forms';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 
 @Component({

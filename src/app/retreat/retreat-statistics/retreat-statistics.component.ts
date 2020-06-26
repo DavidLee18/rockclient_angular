@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { RockService } from 'src/app/rock.service';
 import { routeNames } from 'src/app/app-routing.module';
 import { retreatRouteNames } from '../retreat-routing.module';
-import { MatTreeNestedDataSource } from '@angular/material';
+import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { NestedTreeControl } from '@angular/cdk/tree';
 
 interface Node {

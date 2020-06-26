@@ -3,7 +3,7 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { Observable, throwError, of } from 'rxjs';
 import { catchError, retry, map, concatAll, pluck, tap } from 'rxjs/operators';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { MatSnackBar, MatSnackBarConfig } from '@angular/material';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 
 enum Grade { member = "MEMBER", leader = "LEADER", admin = "ADMIN", mission = "MISSION" }
 
