@@ -1,13 +1,15 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError, retry } from 'rxjs/operators';
+import { Observable, throwError, of } from 'rxjs';
+import { catchError, retry, map, concatAll, pluck, tap } from 'rxjs/operators';
+import { AngularFireAuth } from '@angular/fire/auth';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material';
 
 enum Grade { member = "MEMBER", leader = "LEADER", admin = "ADMIN", mission = "MISSION" }
 
-interface Campuses { names: string[] }
+type Campuses = { names: string[] }
 
-interface Info {
+export interface Info {
     memId: number
     name: string
     campus: string
@@ -34,7 +36,7 @@ interface Leader {
     campuses: string[]
 }
 
-interface Leaders { data: Leader[] }
+type Leaders = { data: Leader[] }
 
 interface Member {
     id: number
@@ -52,12 +54,16 @@ interface MongsanpoResume {
     carNumber: string
 }
 
-interface RetreatResume {
+type MongsanpoMembers = { data: MongsanpoResume[] }
+
+export interface RetreatResume {
     memberUid: string
     lectureHope?: string
     originalGbs?: string
     retreatGbs: string
     position: string
+    attendAll?: boolean
+    dayTimeList?: string[];
 }
 
 interface UserResume {
@@ -78,36 +84,51 @@ interface UserResume {
 @Injectable({ providedIn: "root" })
 export class RockService {
     private readonly root = 'http://cba.sungrak.or.kr:9000';
-    private info: Info;
+    private uid: Observable<string>;
     private readonly headerBasic = {
         'Authorization': 'Basic YWRtaW46ZGh3bHJybGVoISEh',
         'Content-Type': 'application/json'
     }
-    constructor(private http: HttpClient) {
-        this.MyInfo.subscribe((info) => this.info = info)
+    
+    constructor(private http: HttpClient, private auth: AngularFireAuth) {
+        this.uid = auth.authState.pipe(pluck('uid'));
     }
+
+    static nonNull(object: any) {
+        return Object.values(object).every(v => v);
+    }
+
+    login(id: string, password: string) {
+        return this.auth.auth.signInWithEmailAndPassword(id, password).catch(this.handleError);
+    }
+
+    sendEmail(email: string) { return this.auth.auth.sendPasswordResetEmail(email).catch(this.handleError); }
+
+    get loggedIn() { return this.auth.authState.pipe(map(user => user && !user.isAnonymous)); }
+
+    logout() { return this.auth.auth.signOut().catch(this.handleError); }
 
     editCampuses(id: number, campuses: string[]) {
         return this.http.put<Campuses>(`${this.root}/leaders/${id}/edit`, 
-        {names: campuses}, { headers: this.headerBasic })
-        .pipe(retry(3), catchError(this.handleError));
+        {names: campuses}, { headers: this.headerBasic, observe: 'response' }
+        ).pipe(retry(3), catchError(this.handleError), pluck('ok'));
     }
 
     editRetreat(resume: RetreatResume) {
         return this.http.post<RetreatResume>(`${this.root}/retreat/edit`, resume, {
-            headers: this.headerBasic
-        }).pipe(retry(3), catchError(this.handleError));
+            headers: this.headerBasic, observe: 'response',
+        }).pipe(retry(3), catchError(this.handleError), pluck('ok'));
     }
 
     private handleError<T>(error: HttpErrorResponse, caught?: Observable<T>) {
         if (error.error instanceof ErrorEvent) {
             // 클라이언트나 네트워크 문제로 발생한 에러.
-            console.error('An error occurred:', error.error.message);
+            console.error('에러 발생:', error.error.message);
         } else {
             // 백엔드에서 실패한 것으로 보낸 에러.
             // 요청으로 받은 에러 객체를 확인하면 원인을 확인할 수 있습니다.
-            console.error(`Backend returned code ${error.status}. 
-            body was: ${error.error}`);
+            console.error(`벡엔드 code: ${error.status}. 
+            body: ${JSON.stringify(error.error)}`);
         }
         // 사용자가 이해할 수 있는 에러 메시지를 반환합니다.
         return throwError('Something bad happened; please try again later.');
@@ -126,42 +147,67 @@ export class RockService {
 
 
     get MyInfo() {
-        return this.http.get<Info>(`${this.root}/members/info?uid=`, {
-            headers: {
-                'Accept': 'application/json',
-                ...this.headerBasic
-            }
-        }).pipe(retry(3), catchError(this.handleError));
+        return this.uid.pipe(map((uid, index) => {
+            if(uid == null) throw new Error("uid null!");
+            else return this.http.get<Info>(`${this.root}/members/info?uid=${uid}`, {
+                headers: {
+                    'Accept': 'application/json',
+                    ...this.headerBasic
+                }
+            });
+        }), concatAll(), retry(3), catchError(this.handleError));
     }
 
     registerMongsanpo(resume: MongsanpoResume) {
         return this.http.post<MongsanpoResume>(`${this.root}/mongsanpo/members`, resume, {
+            headers: this.headerBasic, observe: 'response',
+        }).pipe(retry(3), catchError(this.handleError), pluck('ok'));
+    }
+
+    get MongsanpoMembers() {
+        return this.http.get<MongsanpoMembers>(`${this.root}/mongsanpo/members`, {
             headers: this.headerBasic
         }).pipe(retry(3), catchError(this.handleError));
     }
 
     registerRetreat(resume: RetreatResume) {
-        return this.http.post<RetreatResume>(`${this.root}/retreat/register`, resume, {
-            headers: this.headerBasic
-        }).pipe(retry(3), catchError(this.handleError));
+        return of(resume).pipe(map((resume) => {
+            if(resume.attendAll != null
+                && resume.attendAll != undefined
+                && resume.lectureHope
+                && resume.originalGbs
+                && (resume.attendAll && (resume.dayTimeList == null || resume.dayTimeList == undefined)) || (!resume.attendAll && resume.dayTimeList.length > 0))
+                return this.http.post<RetreatResume>(`${this.root}/retreat/register`, resume, {
+                headers: this.headerBasic, observe: 'response',
+            }); else throw new Error("수련회 등록에 필수값 없음");
+        }), concatAll(), retry(3), catchError(this.handleError), pluck('ok'));
+    }
+
+    get retreatRegistered() {
+        return this.MyInfo.pipe(tap(info => console.log(JSON.stringify(info))), map(v => Object.values(v.retreatGbsInfo).every(val => val)));
     }
 
     setLeader({ memId, grade = Grade.leader }: { memId: number; grade: Grade; }) {
         return this.http.post(`${this.root}/leaders/register`, `id=${memId}&grade=${grade}`, {
             headers: new HttpHeaders(this.headerBasic)
-            .set('Content-type', 'application/x-www-form-urlencoded')
-        })
-        .pipe(retry(3), catchError(this.handleError));
+            .set('Content-type', 'application/x-www-form-urlencoded'),
+            observe: 'response',
+        }).pipe(retry(3), catchError(this.handleError), pluck('ok'));
     }
 
     signUp(resume: UserResume) {
         return this.http.post<UserResume>(`${this.root}/members/join`, resume, {
-            headers: this.headerBasic
-        }).pipe(retry(3), catchError(this.handleError));
+            headers: this.headerBasic, observe: 'response',
+        }).pipe(retry(3), catchError(this.handleError), pluck('ok'));
     }
 
     unsetLeader(id: number) {
-        return this.http.delete(`${this.root}/leaders/${id}`, { headers: this.headerBasic })
-        .pipe(retry(3), catchError(this.handleError));
+        return this.http.delete(`${this.root}/leaders/${id}`, {
+            headers: this.headerBasic, observe: 'response',
+        }).pipe(retry(3), catchError(this.handleError), pluck('ok'));
+    }
+
+    openDefault(snackbar: MatSnackBar, message: string, action?: string, config?: MatSnackBarConfig) {
+        return snackbar.open(message, action, { duration: 3000, horizontalPosition: 'start', ...config });
     }
 }

@@ -1,0 +1,56 @@
+<mat-toolbar>
+    <button mat-icon-button (click)="nav.toggle()">
+        <mat-icon>menu</mat-icon>
+    </button>
+    <span>수련회 {{(retreatRegistered | async) ? "수정" : "등록"}}</span>
+    <span class="spacer"></span>
+    <button mat-icon-button [matMenuTriggerFor]="account"><mat-icon [class.grey]="!(loggedIn | async)">account_circle</mat-icon></button>
+    <mat-menu #account="matMenu">
+        <ng-template matMenuContent>
+            <button mat-menu-item disabled>{{(loggedIn | async) ? "로그인 됨" : "로그인 안 됨"}}</button>
+            <button mat-menu-item [routerLink]="(loggedIn | async) ? null : '/login'" (click)="logout()">{{(loggedIn | async) ? "로그아웃하기" : "로그인하기"}}</button>
+        </ng-template>
+    </mat-menu>
+</mat-toolbar>
+<mat-sidenav-container>
+    <mat-sidenav #nav>
+        <mat-nav-list>
+            <mat-list-item *ngFor="let route of routes" [routerLink]="route.path" (click)="nav.close()">
+                <mat-icon *ngIf="route.icon">{{route?.icon}}</mat-icon>
+                <a mat-list-item>{{route.label}}</a>
+            </mat-list-item>
+        </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <form [formGroup]="form" (ngSubmit)="submit()">
+            <mat-form-field appearance="fill">
+                <mat-label>수련회 GBS</mat-label>
+                <mat-select formControlName="retreat_gbs" required>
+                    <mat-option *ngFor="let option of retreat_gbses" [value]="option"></mat-option>
+                </mat-select>
+                <!--<mat-error *ngIf="form.get("retreat_gbs").errors?.required">수련회 GBS를 선택하세요</mat-error>-->
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>조원구분</mat-label>
+                <mat-select formControlName="position" required>
+                    <mat-option *ngFor="let option of positions" [value]="option"></mat-option>
+                </mat-select>
+                <!--<mat-error *ngIf="form.get("position").errors?.required">조원구분을 선택하세요</mat-error>-->
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>기존 GBS</mat-label>
+                <mat-select formControlName="gbs" required>
+                    <mat-option *ngFor="let option of gbses" [value]="option"></mat-option>
+                </mat-select>
+                <!--<mat-error *ngIf="form.get("gbs").errors?.required">기존 GBS를 선택하세요</mat-error>-->
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>선택식 강의</mat-label>
+                <mat-select formControlName="lecture" required>
+                    <mat-option *ngFor="let option of lectures" [value]="option"></mat-option>
+                </mat-select>
+                <!--<mat-error *ngIf="form.get("lecture").errors?.required">선택식 강의를 선택하세요</mat-error>-->
+            </mat-form-field>
+        </form>
+    </mat-sidenav-content>
+</mat-sidenav-container>

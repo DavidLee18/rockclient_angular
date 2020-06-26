@@ -1,0 +1,117 @@
+<mat-toolbar>
+    <button mat-icon-button (click)="nav.open()">
+        <mat-icon>menu</mat-icon>
+    </button>
+    <span>회원가입</span>
+    <span class="spacer"></span>
+</mat-toolbar>
+<mat-sidenav-container>
+    <mat-sidenav #nav>
+        <mat-nav-list>
+            <mat-list-item *ngFor="let route of routes" [routerLink]="route.path" (click)="nav.close()">
+                <mat-icon *ngIf="route.icon != undefined">{{route.icon}}</mat-icon>
+                <a mat-list-item>{{route.label}}</a>
+            </mat-list-item>
+        </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <form [formGroup]="form" (ngSubmit)="signUp()">
+        <div>
+            <mat-form-field appearance="fill">
+                <mat-label>e-mail 주소</mat-label>
+                <input matInput type="email" formControlName="email" required>
+                <mat-error *ngIf="form.get('email').errors?.required">e-mail을 입력하세요</mat-error>
+                <mat-error *ngIf="form.get('email').errors?.email">올바른 e-mail주소를 입력하세요</mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>비밀번호</mat-label>
+                <input matInput [type]="passVisible ? 'text' : 'password'" minlength="6" formControlName="pass" required>
+                <button mat-icon-button matSuffix (click)="passVisible = !passVisible">
+                    <mat-icon>{{passVisible ? 'visibility_off' : 'visibility'}}</mat-icon>
+                </button>
+                <mat-error *ngIf="form.get('pass').errors?.required">비밀번호를 입력하세요</mat-error>
+                <mat-error *ngIf="form.get('pass').errors?.minlength">비밀번호는 6자 이상이어야 합니다</mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>비밀번호 확인</mat-label>
+                <input matInput [type]="passAgainVisible ? 'text' : 'password'" formControlName="passAgain" required>
+                <button mat-icon-button matSuffix (click)="passAgainVisible = !passAgainVisible">
+                    <mat-icon>{{passAgainVisible ? 'visibility_off' : 'visibility'}}</mat-icon>
+                </button>
+                <mat-error *ngIf="form.get('passAgain').errors?.different">비밀번호를 같게 입력하세요</mat-error>
+            </mat-form-field>
+        </div>
+        <div>
+            <mat-form-field appearance="fill">
+                <mat-label>이름</mat-label>
+                <input matInput type="text" formControlName="name" required>
+                <mat-error *ngIf="form.get('name').errors?.required">이름을 입력하세요</mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>연락처</mat-label>
+                <input matInput type="tel" formControlName="mobile" required>
+                <mat-error *ngIf="form.get('mobile').errors?.required">연락처를 입력하세요</mat-error>
+                <mat-error *ngIf="form.get('mobile').errors?.pattern">올바른 연락처를 입력하세요</mat-error>
+                <mat-hint>ex) 01012345678</mat-hint>
+            </mat-form-field>
+        </div>
+        <div>
+            <mat-form-field appearance="fill">
+                <mat-label>생년월일</mat-label>
+                <input matInput [matDatepicker]="date" formControlName="birthDate" required>
+                <mat-datepicker-toggle matSuffix [for]="date"></mat-datepicker-toggle>
+                <mat-datepicker #date></mat-datepicker>
+                <mat-error *ngIf="form.get('birthDate').errors?.required">생년월일을 입력하세요</mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>캠퍼스</mat-label>
+                <mat-select formControlName="campus" required>
+                    <mat-option *ngFor="let campus of campuses" [value]="campuses">{{campus}}</mat-option>
+                </mat-select>
+                <mat-error *ngIf="form.get('campus').errors?.required">캠퍼스를 선택하세요</mat-error>
+            </mat-form-field>
+        </div>
+        <div>
+            <mat-radio-group formControlName="sex" required>
+                <mat-radio-button value="남">남자</mat-radio-button>
+                <mat-radio-button value="여">여자</mat-radio-button>
+            </mat-radio-group>
+        </div>
+        <div>
+            <mat-form-field appearance="fill">
+                <mat-label>학교</mat-label>
+                <input matInput type="text" formControlName="school" required>
+                <mat-error *ngIf="form.get('school').errors?.required">학교를 입력하세요</mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>전공</mat-label>
+                <input matInput type="text" formControlName="major" required>
+                <mat-error *ngIf="form.get('major').errors?.required">전공을 입력하세요</mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>학년</mat-label>
+                <mat-select formControlName="grade" required>
+                    <mat-option *ngFor="let grade of grades" [value]="grade">{{grade}}</mat-option>
+                </mat-select>
+                <mat-error *ngIf="form.get('grade').errors?.required">학년을 선택하세요</mat-error>
+            </mat-form-field>
+        </div>
+        <div>
+            <mat-form-field appearance="fill">
+                <mat-label>주소</mat-label>
+                <input matInput type="text" formControlName="address" required>
+                <mat-error *ngIf="form.get('address').errors?.required">주소를 입력하세요</mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>인도자(새신자 전용)</mat-label>
+                <input matInput type="text" formControlName="guide">
+                <mat-hint>새신자이실 경우 인도자를 입력해주세요</mat-hint>
+            </mat-form-field>
+        </div>
+        <div>
+            <button mat-stroked-button routerLink="/login">이전으로</button>
+            <button mat-raised-button type="submit" [disabled]="form?.invalid">로그인</button>
+        </div>
+        </form>
+    </mat-sidenav-content>
+</mat-sidenav-container>

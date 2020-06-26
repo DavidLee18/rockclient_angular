@@ -1,0 +1,60 @@
+<mat-toolbar>
+    <button mat-icon-button (click)="nav.toggle()">
+        <mat-icon>menu</mat-icon>
+    </button>
+    <span>수련회 정보</span>
+    <span class="spacer"></span>
+    <button mat-icon-button [matMenuTriggerFor]="account"><mat-icon [class.grey]="!loggedIn">account_circle</mat-icon></button>
+    <mat-menu #account="matMenu">
+        <ng-template matMenuContent>
+            <button mat-menu-item disabled>{{loggedIn ? "로그인 됨" : "로그인 안 됨"}}</button>
+            <button mat-menu-item [routerLink]="loggedIn ? null : '/login'" (click)="logout()">{{loggedIn ? "로그아웃하기" : "로그인하기"}}</button>
+        </ng-template>
+    </mat-menu>
+</mat-toolbar>
+<mat-sidenav-container>
+    <mat-sidenav #nav>
+        <mat-nav-list>
+            <mat-list-item *ngFor="let route of routes" [routerLink]="route.path" (click)="nav.close()">
+                <mat-icon *ngIf="route.icon">{{route?.icon}}</mat-icon>
+                <a mat-list-item>{{route.label}}</a>
+            </mat-list-item>
+        </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <mat-card *ngIf="(info | async) as info">
+            <mat-card-header>
+                <mat-card-title>{{ info.name }}</mat-card-title>
+                <mat-card-subtitle>{{ info.grade }}</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+                <mat-list>
+                    <mat-list-item>ID: {{ info.memId }}</mat-list-item>
+                    <mat-list-item>캠퍼스: {{ info.campus }}</mat-list-item>
+                    <mat-list-item>생년월일: {{ info.dt_birth | date:'longDate' }}</mat-list-item>
+                    <mat-list-item>연락처: {{ info.mobile }}</mat-list-item>
+                    <ng-template #gbsElse>
+                        <mat-list-item>최근 GBS 정보 없음</mat-list-item>
+                    </ng-template>
+                    <mat-list *ngIf="info.gbsInfo as gbs; else gbsElse">
+                        최근 GBS 정보: 
+                        <mat-list-item>과정: {{ gbs.gbs }}</mat-list-item>
+                        <mat-list-item>조원구분: {{ gbs.position }}</mat-list-item>
+                    </mat-list>
+                    <ng-template #retreatGbsElse>
+                        <mat-list-item>최근 수련회 GBS 정보 없음</mat-list-item>
+                    </ng-template>
+                    <mat-list *ngIf="info.retreatGbsInfo as retreatGbs; else retreatGbsElse">
+                        최근 수련회 GBS 정보: 
+                        <mat-list-item>참가 수련회 ID: {{ retreatGbs.retreatId }}</mat-list-item>
+                        <mat-list-item>과정: {{ retreatGbs.gbs }}</mat-list-item>
+                        <mat-list-item>조원구분: {{ retreatGbs.position }}</mat-list-item>
+                    </mat-list>
+                </mat-list>
+            </mat-card-content>
+            <mat-card-actions>
+                <button mat-stroked-button (click)="register()">수정하기</button>
+            </mat-card-actions>
+        </mat-card>
+    </mat-sidenav-content>
+</mat-sidenav-container>

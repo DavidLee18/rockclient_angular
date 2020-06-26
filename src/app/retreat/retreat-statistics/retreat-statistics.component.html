@@ -1,0 +1,171 @@
+<mat-toolbar>
+    <button mat-icon-button (click)="nav.toggle()">
+        <mat-icon>menu</mat-icon>
+    </button>
+    <span>수련회 통계</span>
+    <span class="spacer"></span>
+    <button mat-icon-button [matMenuTriggerFor]="account"><mat-icon [class.grey]="!loggedIn">account_circle</mat-icon></button>
+    <mat-menu #account="matMenu">
+        <ng-template matMenuContent>
+            <button mat-menu-item disabled>{{loggedIn ? "로그인 됨" : "로그인 안 됨"}}</button>
+            <button mat-menu-item [routerLink]="loggedIn ? null : '/login'" (click)="logout()">{{loggedIn ? "로그아웃하기" : "로그인하기"}}</button>
+        </ng-template>
+    </mat-menu>
+</mat-toolbar>
+<mat-sidenav-container>
+    <mat-sidenav #nav>
+        <mat-nav-list>
+            <mat-list-item *ngFor="let route of routes" [routerLink]="route.path" (click)="nav.close()">
+                <mat-icon *ngIf="route.icon">{{route?.icon}}</mat-icon>
+                <a mat-list-item>{{route.label}}</a>
+            </mat-list-item>
+        </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <table mat-table [dataSource]="stats" class="mat-elevation-z8">
+
+            <!--- Note that these columns can be defined in any order.
+                  The actual rendered columns are set as a property on the row definition" -->
+
+            <ng-container matColumnDef="period">
+                <th mat-header-cell *matHeaderCellDef> 구분 </th>
+                <td mat-cell *matCellDef="let element">{{element.period}}</td>
+            </ng-container>
+          
+            <ng-container matColumnDef="first">
+              <th mat-header-cell *matHeaderCellDef> 첫째날 </th>
+              <td mat-cell *matCellDef="let element">
+                <mat-tree [dataSource]="element.first.data" [treeControl]="element.first.control" class="tree">
+                    <!-- This is the tree node template for leaf nodes -->
+                    <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
+                        <li class="mat-tree-node">
+                            <!-- use a disabled button to provide padding for tree leaf -->
+                             <button mat-icon-button disabled></button>
+                             {{node.value}}
+                        </li>
+                    </mat-tree-node>
+                    <!-- This is the tree node template for expandable nodes -->
+                     <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
+                         <li>
+                             <div class="mat-tree-node">
+                                 <button mat-icon-button matTreeNodeToggle
+                                         [attr.aria-label]="'toggle ' + node.name">
+                                 <mat-icon class="mat-icon-rtl-mirror">
+                                     {{element.first.control.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                                 </mat-icon>
+                                 </button>
+                                 {{node.value}}
+                             </div>
+                             <ul [class.example-tree-invisible]="!element.first.control.isExpanded(node)">
+                                 <ng-container matTreeNodeOutlet></ng-container>
+                             </ul>
+                         </li>
+                     </mat-nested-tree-node>
+                </mat-tree>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="second">
+              <th mat-header-cell *matHeaderCellDef> 둘째날 </th>
+              <td mat-cell *matCellDef="let element">
+                <mat-tree [dataSource]="element.second.data" [treeControl]="element.second.control" class="tree">
+                    <!-- This is the tree node template for leaf nodes -->
+                    <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
+                        <li class="mat-tree-node">
+                            <!-- use a disabled button to provide padding for tree leaf -->
+                             <button mat-icon-button disabled></button>
+                             {{node.value}}
+                        </li>
+                    </mat-tree-node>
+                    <!-- This is the tree node template for expandable nodes -->
+                     <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
+                         <li>
+                             <div class="mat-tree-node">
+                                 <button mat-icon-button matTreeNodeToggle
+                                         [attr.aria-label]="'toggle ' + node.name">
+                                 <mat-icon class="mat-icon-rtl-mirror">
+                                     {{element.second.control.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                                 </mat-icon>
+                                 </button>
+                                 {{node.value}}
+                             </div>
+                             <ul [class.example-tree-invisible]="!element.second.control.isExpanded(node)">
+                                 <ng-container matTreeNodeOutlet></ng-container>
+                             </ul>
+                         </li>
+                     </mat-nested-tree-node>
+                </mat-tree>
+              </td>
+            </ng-container>
+          
+            <ng-container matColumnDef="third">
+              <th mat-header-cell *matHeaderCellDef> 셋째날 </th>
+              <td mat-cell *matCellDef="let element">
+                <mat-tree [dataSource]="element.third.data" [treeControl]="element.third.control" class="tree">
+                    <!-- This is the tree node template for leaf nodes -->
+                    <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
+                        <li class="mat-tree-node">
+                            <!-- use a disabled button to provide padding for tree leaf -->
+                             <button mat-icon-button disabled></button>
+                             {{node.value}}
+                        </li>
+                    </mat-tree-node>
+                    <!-- This is the tree node template for expandable nodes -->
+                     <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
+                         <li>
+                             <div class="mat-tree-node">
+                                 <button mat-icon-button matTreeNodeToggle
+                                         [attr.aria-label]="'toggle ' + node.name">
+                                 <mat-icon class="mat-icon-rtl-mirror">
+                                     {{element.third.control.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                                 </mat-icon>
+                                 </button>
+                                 {{node.value}}
+                             </div>
+                             <ul [class.example-tree-invisible]="!element.third.control.isExpanded(node)">
+                                 <ng-container matTreeNodeOutlet></ng-container>
+                             </ul>
+                         </li>
+                     </mat-nested-tree-node>
+                </mat-tree>
+              </td>
+            </ng-container>
+          
+            <ng-container matColumnDef="fourth">
+              <th mat-header-cell *matHeaderCellDef> 넷째날 </th>
+              <td mat-cell *matCellDef="let element">
+                <mat-tree [dataSource]="element.fourth.data" [treeControl]="element.fourth.control" class="tree">
+                    <!-- This is the tree node template for leaf nodes -->
+                    <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
+                        <li class="mat-tree-node">
+                            <!-- use a disabled button to provide padding for tree leaf -->
+                             <button mat-icon-button disabled></button>
+                             {{node.value}}
+                        </li>
+                    </mat-tree-node>
+                    <!-- This is the tree node template for expandable nodes -->
+                     <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
+                         <li>
+                             <div class="mat-tree-node">
+                                 <button mat-icon-button matTreeNodeToggle
+                                         [attr.aria-label]="'toggle ' + node.name">
+                                 <mat-icon class="mat-icon-rtl-mirror">
+                                     {{element.fourth.control.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                                 </mat-icon>
+                                 </button>
+                                 {{node.value}}
+                             </div>
+                             <ul [class.example-tree-invisible]="!element.fourth.control.isExpanded(node)">
+                                 <ng-container matTreeNodeOutlet></ng-container>
+                             </ul>
+                         </li>
+                     </mat-nested-tree-node>
+                </mat-tree>
+              </td>
+            </ng-container>
+          
+            <tr mat-header-row *matHeaderRowDef="['period', 'first', 'second', 'third', 'fourth']"></tr>
+            <tr mat-row *matRowDef="let row; columns: ['period', 'first', 'second', 'third', 'fourth'];"></tr>
+        </table>
+    </mat-sidenav-content>
+</mat-sidenav-container>

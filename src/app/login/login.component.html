@@ -1,26 +1,46 @@
 <mat-toolbar>
-    <button mat-icon-button (click)="nav.toggle()">
+    <button mat-icon-button (click)="nav.open()">
         <mat-icon>menu</mat-icon>
     </button>
-    <span>Login</span>
+    <span>로그인</span>
     <span class="spacer"></span>
-    <mat-icon>account_circle</mat-icon>
+    <button mat-icon-button [matMenuTriggerFor]="account"><mat-icon [class.grey]="!loggedIn">account_circle</mat-icon></button>
+    <mat-menu #account="matMenu">
+        <ng-template matMenuContent>
+            <button mat-menu-item disabled>{{loggedIn ? "로그인 됨" : "로그인 안 됨"}}</button>
+            <button mat-menu-item (click)="logout()">{{loggedIn ? "로그아웃하기" : "로그인하기"}}</button>
+        </ng-template>
+    </mat-menu>
 </mat-toolbar>
 <mat-sidenav-container>
     <mat-sidenav #nav>
         <mat-nav-list>
-            <mat-list-item>
-                <mat-icon>account_circle</mat-icon>
-                <a mat-list-item>로그인</a>
+            <mat-list-item *ngFor="let route of routes" [routerLink]="route.path" (click)="nav.close()">
+                <mat-icon *ngIf="route.icon != undefined">{{route.icon}}</mat-icon>
+                <a mat-list-item>{{route.label}}</a>
             </mat-list-item>
         </mat-nav-list>
     </mat-sidenav>
     <mat-sidenav-content>
-        <form>
+        <form [formGroup]="form" (ngSubmit)="login(form.get('email').value, form.get('pass').value)">
+        <div>
             <mat-form-field appearance="fill">
                 <mat-label>e-mail 주소</mat-label>
-                <input matInput>
+                <input matInput type="email" formControlName="email" required>
+                <mat-error *ngIf="form.get('email').errors?.required">e-mail을 입력하세요</mat-error>
+                <mat-error *ngIf="form.get('email').errors?.email">올바른 e-mail주소를 입력하세요</mat-error>
             </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>비밀번호</mat-label>
+                <input matInput type="password" formControlName="pass" required>
+                <mat-error *ngIf="form.get('pass').errors?.required">비밀번호를 입력하세요</mat-error>
+            </mat-form-field>
+        </div>
+        <div>
+            <button mat-stroked-button routerLink="/sign-up">회원가입</button>
+            <button mat-raised-button type="submit" [disabled]="form?.invalid">로그인</button>
+            <button mat-stroked-button (click)="openSheet()">비밀번호를 잊으셨나요?</button>
+        </div>
         </form>
     </mat-sidenav-content>
 </mat-sidenav-container>
