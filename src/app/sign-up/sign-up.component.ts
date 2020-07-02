@@ -74,7 +74,7 @@ export class SignUpComponent implements OnInit {
       major: this.form.get('major').value,
       grade: this.form.get('grade').value,
       guide: this.form.get('guide').value,
-    }).subscribe((signedUp) => {
+    }).subscribe(signedUp => {
       if (signedUp) {
         let ref = this._service.openDefault(this._snackBar, '회원가입에 성공했습니다.', '로그인하기');
         ref.onAction().subscribe(() => { this._router.navigateByUrl('/login'); });

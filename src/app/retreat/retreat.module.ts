@@ -21,6 +21,10 @@ import { environment } from 'src/environments/environment';
 import { RetreatStatisticsComponent } from './retreat-statistics/retreat-statistics.component';
 import { RetreatRegisterComponent } from './retreat-register/retreat-register.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatCheckboxModule } from "@angular/material/checkbox";
+import { MatSlideToggleModule } from "@angular/material/slide-toggle";
+import { MatDialogModule } from '@angular/material/dialog';
+import { DiscardChangeDialog } from '../discard-change.guard';
 
 
 
@@ -49,6 +53,12 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     MatFormFieldModule,
     MatSelectModule,
     ReactiveFormsModule,
+    MatCheckboxModule,
+    MatSlideToggleModule,
+    MatDialogModule,
   ],
+  entryComponents: [
+    DiscardChangeDialog,
+  ]
 })
 export class RetreatModule { }

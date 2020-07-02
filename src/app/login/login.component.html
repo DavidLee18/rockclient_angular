@@ -38,7 +38,7 @@
         </div>
         <div>
             <button mat-stroked-button routerLink="/sign-up">회원가입</button>
-            <button mat-raised-button type="submit" [disabled]="form?.invalid">로그인</button>
+            <button mat-raised-button type="submit" [disabled]="form?.invalid" cdkFocusInitial>로그인</button>
             <button mat-stroked-button (click)="openSheet()">비밀번호를 잊으셨나요?</button>
         </div>
         </form>

@@ -5,3 +5,4 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .spacer { flex: 1 1 auto; }
 mat-form-field, button { margin: 8px; }
 mat-sidenav-container { padding: 10px; }
+table { text-align: center; }

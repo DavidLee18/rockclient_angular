@@ -6,13 +6,15 @@ import { canActivate, redirectUnauthorizedTo } from "@angular/fire/auth-guard";
 import { RetreatInfoComponent } from './retreat-info/retreat-info.component';
 import { RetreatStatisticsComponent } from './retreat-statistics/retreat-statistics.component';
 import { RetreatRegisterComponent } from './retreat-register/retreat-register.component';
+import { AuthGuard } from '../auth.guard';
+import { DiscardChangeGuard } from '../discard-change.guard';
 
 const retreatRoutes: Routes = [{
-  path: 'retreat', component: RetreatComponent, ...canActivate(redirectUnauthorizedTo(['login'])),
+  path: 'retreat', component: RetreatComponent, canActivate: [AuthGuard], canActivateChild: [AuthGuard],
   children: [
     { path: '', component: RetreatInfoComponent, },
     { path: 'statistics', component: RetreatStatisticsComponent, },
-    { path: 'register', component: RetreatRegisterComponent, },
+    { path: 'register', component: RetreatRegisterComponent, canDeactivate: [DiscardChangeGuard] },
   ]
 }];
 

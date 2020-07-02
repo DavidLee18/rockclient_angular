@@ -38,7 +38,7 @@ interface Leader {
 
 type Leaders = { data: Leader[] }
 
-interface Member {
+export interface Member {
     id: number
     name: string
     mobile: string
@@ -99,14 +99,14 @@ export class RockService {
     }
 
     login(id: string, password: string) {
-        return this.auth.auth.signInWithEmailAndPassword(id, password).catch(this.handleError);
+        return this.auth.signInWithEmailAndPassword(id, password).catch(this.handleError);
     }
 
-    sendEmail(email: string) { return this.auth.auth.sendPasswordResetEmail(email).catch(this.handleError); }
+    sendEmail(email: string) { return this.auth.sendPasswordResetEmail(email).catch(this.handleError); }
 
     get loggedIn() { return this.auth.authState.pipe(map(user => user && !user.isAnonymous)); }
 
-    logout() { return this.auth.auth.signOut().catch(this.handleError); }
+    logout() { return this.auth.signOut().catch(this.handleError); }
 
     editCampuses(id: number, campuses: string[]) {
         return this.http.put<Campuses>(`${this.root}/leaders/${id}/edit`, 
@@ -127,8 +127,8 @@ export class RockService {
         } else {
             // 백엔드에서 실패한 것으로 보낸 에러.
             // 요청으로 받은 에러 객체를 확인하면 원인을 확인할 수 있습니다.
-            console.error(`벡엔드 code: ${error.status}. 
-            body: ${JSON.stringify(error.error)}`);
+            console.error(`벡엔드 code: ${error.status}(${error.statusText}). 
+            body: ${JSON.stringify(error.error)} (${error.message})`);
         }
         // 사용자가 이해할 수 있는 에러 메시지를 반환합니다.
         return throwError('Something bad happened; please try again later.');
@@ -147,7 +147,7 @@ export class RockService {
 
 
     get MyInfo() {
-        return this.uid.pipe(map((uid, index) => {
+        return this.uid.pipe(map((uid) => {
             if(uid == null) throw new Error("uid null!");
             else return this.http.get<Info>(`${this.root}/members/info?uid=${uid}`, {
                 headers: {
@@ -171,23 +171,22 @@ export class RockService {
     }
 
     registerRetreat(resume: RetreatResume) {
-        return of(resume).pipe(map((resume) => {
+        return of(resume).pipe(map(resume => {
             if(resume.attendAll != null
                 && resume.attendAll != undefined
-                && resume.lectureHope
                 && resume.originalGbs
-                && (resume.attendAll && (resume.dayTimeList == null || resume.dayTimeList == undefined)) || (!resume.attendAll && resume.dayTimeList.length > 0))
+                && (resume.attendAll && (resume.dayTimeList == null || resume.dayTimeList == undefined || resume.dayTimeList?.length == 0)) || (!resume.attendAll && resume.dayTimeList.length > 0))
                 return this.http.post<RetreatResume>(`${this.root}/retreat/register`, resume, {
                 headers: this.headerBasic, observe: 'response',
-            }); else throw new Error("수련회 등록에 필수값 없음");
-        }), concatAll(), retry(3), catchError(this.handleError), pluck('ok'));
+            }); else return throwError("수련회 등록에 필수값 없음");
+        }), concatAll(), pluck('ok'), retry(3), catchError(this.handleError));
     }
 
     get retreatRegistered() {
-        return this.MyInfo.pipe(tap(info => console.log(JSON.stringify(info))), map(v => Object.values(v.retreatGbsInfo).every(val => val)));
+        return this.MyInfo.pipe(map(info => RockService.nonNull(info.retreatGbsInfo)));
     }
 
-    setLeader({ memId, grade = Grade.leader }: { memId: number; grade: Grade; }) {
+    setLeader(memId: number, grade: Grade = Grade.leader) {
         return this.http.post(`${this.root}/leaders/register`, `id=${memId}&grade=${grade}`, {
             headers: new HttpHeaders(this.headerBasic)
             .set('Content-type', 'application/x-www-form-urlencoded'),

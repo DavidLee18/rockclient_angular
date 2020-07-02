@@ -32,7 +32,14 @@ import { AngularFireAuthGuardModule } from '@angular/fire/auth-guard';
 import { registerLocaleData } from '@angular/common';
 import * as ko from '@angular/common/locales/ko';
 import * as koExtra from '@angular/common/locales/extra/ko';
-import { LeadersComponent } from './leaders/leaders.component';
+import { LeadersComponent, MemberSearchBottomSheet } from './leaders/leaders.component';
+import { DiscardChangeDialog } from "src/app/discard-change.guard";
+import { MatDialogModule } from '@angular/material/dialog';
+import { A11yModule } from '@angular/cdk/a11y';
+import { LogInDialog } from './auth.guard';
+import { MatCardModule } from '@angular/material/card';
+import { MatChipsModule } from "@angular/material/chips";
+import { MatAutocompleteModule } from "@angular/material/autocomplete";
 
 registerLocaleData(ko.default, 'ko', koExtra.default);
 
@@ -44,6 +51,9 @@ registerLocaleData(ko.default, 'ko', koExtra.default);
     SignUpComponent,
     NotFoundComponent,
     LeadersComponent,
+    DiscardChangeDialog,
+    LogInDialog,
+    MemberSearchBottomSheet,
   ],
   imports: [
     BrowserModule,
@@ -70,9 +80,17 @@ registerLocaleData(ko.default, 'ko', koExtra.default);
     MatNativeDateModule,
     MatSelectModule,
     MatRadioModule,
+    MatDialogModule,
+    A11yModule,
+    MatCardModule,
+    MatChipsModule,
+    MatAutocompleteModule,
   ],
   entryComponents: [
     LoginBottomSheet,
+    DiscardChangeDialog,
+    LogInDialog,
+    MemberSearchBottomSheet,
   ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'ko-KR' },

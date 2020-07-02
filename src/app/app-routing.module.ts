@@ -5,18 +5,21 @@ import { SignUpComponent } from './sign-up/sign-up.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { canActivate, redirectLoggedInTo, redirectUnauthorizedTo } from '@angular/fire/auth-guard';
 import { LeadersComponent } from './leaders/leaders.component';
+import { AuthGuard } from "src/app/auth.guard";
+import { DiscardChangeGuard } from './discard-change.guard';
 
 
 const routes: Routes = [
-  { path: 'login', component: LoginComponent, ...canActivate(redirectLoggedInTo(['retreat'])) },
-  { path: 'sign-up', component: SignUpComponent },
-  { path: 'leaders', component: LeadersComponent, ...canActivate(redirectUnauthorizedTo(['login'])) },
+  { path: 'login', component: LoginComponent, canDeactivate: [AuthGuard] },
+  { path: 'sign-up', component: SignUpComponent, canDeactivate: [DiscardChangeGuard] },
+  { path: 'leaders', component: LeadersComponent, canActivate: [AuthGuard], data: {names: ['나진환', '이재현', '김다인', '유상건', '김진석']} },
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: '**', component: NotFoundComponent },
 ];
 
 export const routeNames = [
   { path: '/login', label: '로그인', icon: 'account_circle' },
+  { path: '/leaders', label: '리더 관리', icon: 'people' },
 ];
 
 @NgModule({

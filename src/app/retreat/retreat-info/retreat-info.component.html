@@ -36,24 +36,24 @@
                     <ng-template #gbsElse>
                         <mat-list-item>최근 GBS 정보 없음</mat-list-item>
                     </ng-template>
-                    <mat-list *ngIf="info.gbsInfo as gbs; else gbsElse">
+                    <mat-list *ngIf="nonNull(info.gbsInfo); else gbsElse">
                         최근 GBS 정보: 
-                        <mat-list-item>과정: {{ gbs.gbs }}</mat-list-item>
-                        <mat-list-item>조원구분: {{ gbs.position }}</mat-list-item>
+                        <mat-list-item>과정: {{ info.gbsInfo.gbs }}</mat-list-item>
+                        <mat-list-item>조원구분: {{ info.gbsInfo.position }}</mat-list-item>
                     </mat-list>
                     <ng-template #retreatGbsElse>
                         <mat-list-item>최근 수련회 GBS 정보 없음</mat-list-item>
                     </ng-template>
-                    <mat-list *ngIf="info.retreatGbsInfo as retreatGbs; else retreatGbsElse">
+                    <mat-list *ngIf="nonNull(info.retreatGbsInfo); else retreatGbsElse">
                         최근 수련회 GBS 정보: 
-                        <mat-list-item>참가 수련회 ID: {{ retreatGbs.retreatId }}</mat-list-item>
-                        <mat-list-item>과정: {{ retreatGbs.gbs }}</mat-list-item>
-                        <mat-list-item>조원구분: {{ retreatGbs.position }}</mat-list-item>
+                        <mat-list-item>참가 수련회 ID: {{ info.retreatGbsInfo.retreatId }}</mat-list-item>
+                        <mat-list-item>과정: {{ info.retreatGbsInfo.gbs }}</mat-list-item>
+                        <mat-list-item>조원구분: {{ info.retreatGbsInfo.position }}</mat-list-item>
                     </mat-list>
                 </mat-list>
             </mat-card-content>
             <mat-card-actions>
-                <button mat-stroked-button (click)="register()">수정하기</button>
+                <button mat-stroked-button (click)="register()">{{ (already | async) ? "수정" : "등록" }}하기</button>
             </mat-card-actions>
         </mat-card>
     </mat-sidenav-content>

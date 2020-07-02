@@ -16,6 +16,7 @@ export class RetreatInfoComponent implements OnInit {
 
   readonly info: Observable<Info>;
   loggedIn: boolean
+  already = this._service.retreatRegistered;
 
   constructor(private _service: RockService, private _router: Router) {
     this.info = _service.MyInfo;
@@ -27,5 +28,7 @@ export class RetreatInfoComponent implements OnInit {
   logout() { this._service.logout(); this._router.navigateByUrl('/login'); }
 
   register() { this._router.navigateByUrl("/retreat/register"); }
+
+  nonNull = (obj) => RockService.nonNull(obj);
 
 }

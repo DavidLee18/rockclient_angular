@@ -23,34 +23,87 @@
     </mat-sidenav>
     <mat-sidenav-content>
         <form [formGroup]="form" (ngSubmit)="submit()">
-            <mat-form-field appearance="fill">
-                <mat-label>수련회 GBS</mat-label>
-                <mat-select formControlName="retreat_gbs" required>
-                    <mat-option *ngFor="let option of retreat_gbses" [value]="option"></mat-option>
-                </mat-select>
-                <!--<mat-error *ngIf="form.get("retreat_gbs").errors?.required">수련회 GBS를 선택하세요</mat-error>-->
-            </mat-form-field>
-            <mat-form-field appearance="fill">
-                <mat-label>조원구분</mat-label>
-                <mat-select formControlName="position" required>
-                    <mat-option *ngFor="let option of positions" [value]="option"></mat-option>
-                </mat-select>
-                <!--<mat-error *ngIf="form.get("position").errors?.required">조원구분을 선택하세요</mat-error>-->
-            </mat-form-field>
-            <mat-form-field appearance="fill">
-                <mat-label>기존 GBS</mat-label>
-                <mat-select formControlName="gbs" required>
-                    <mat-option *ngFor="let option of gbses" [value]="option"></mat-option>
-                </mat-select>
-                <!--<mat-error *ngIf="form.get("gbs").errors?.required">기존 GBS를 선택하세요</mat-error>-->
-            </mat-form-field>
-            <mat-form-field appearance="fill">
-                <mat-label>선택식 강의</mat-label>
-                <mat-select formControlName="lecture" required>
-                    <mat-option *ngFor="let option of lectures" [value]="option"></mat-option>
-                </mat-select>
-                <!--<mat-error *ngIf="form.get("lecture").errors?.required">선택식 강의를 선택하세요</mat-error>-->
-            </mat-form-field>
+            <div>
+                <mat-form-field appearance="fill">
+                    <mat-label>수련회 GBS</mat-label>
+                    <mat-select formControlName="retreat_gbs" required>
+                        <mat-option *ngFor="let option of retreat_gbses" [value]="option">{{option}}</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="form.get('retreat_gbs').errors?.required">수련회 GBS를 선택하세요</mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="fill">
+                    <mat-label>조원구분</mat-label>
+                    <mat-select formControlName="position" required>
+                        <mat-option *ngFor="let option of positions" [value]="option">{{option}}</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="form.get('position').errors?.required">조원구분을 선택하세요</mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="fill">
+                    <mat-label>기존 GBS</mat-label>
+                    <mat-select formControlName="gbs" required>
+                        <mat-option *ngFor="let option of gbses" [value]="option">{{option}}</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="form.get('gbs').errors?.required">기존 GBS를 선택하세요</mat-error>
+                </mat-form-field>
+                <mat-form-field *ngIf="false" appearance="fill">
+                    <mat-label>선택식 강의</mat-label>
+                    <mat-select formControlName="lecture" required>
+                        <mat-option *ngFor="let option of lectures" [value]="option">{{option}}</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="form.get('lecture').errors?.required">선택식 강의를 선택하세요</mat-error>
+                </mat-form-field>
+            </div>
+            <div *ngIf="!(retreatRegistered | async)">
+                <h3>수련회 참석 여부</h3>
+                <mat-slide-toggle (change)="onToggled($event.checked)" formControlName="attendAll">전일 참석</mat-slide-toggle>
+                <mat-error *ngIf="form.get('attendAll').errors?.invalid; else clean">아래 표에서 적어도 하나 이상은 선택하세요</mat-error>
+                <ng-template #clean>
+                    <br>
+                    <mat-hint>전일 참석인 경우 체크해주시고, 아닐 시 아래 표에서 참가하는 시간을 선택하세요</mat-hint>
+                </ng-template>
+                <table mat-table formGroupName="dayTime" [dataSource]="dayTimes" class="mat-elevation-z8">
+                    
+                    <ng-container matColumnDef="period" sticky>
+                        <th mat-header-cell *matHeaderCellDef> 구분 </th>
+                        <td mat-cell *matCellDef="let element"> {{element.period}} </td>
+                    </ng-container>
+                    
+                    <ng-container matColumnDef="first">
+                        <th mat-header-cell *matHeaderCellDef> 첫째날 </th>
+                        <td mat-cell *matCellDef="let element">
+                            <mat-checkbox (change)="check($event.checked, element.first)" [formControlName]="element.first"></mat-checkbox>
+                        </td>
+                    </ng-container>
+                    
+                    <ng-container matColumnDef="second">
+                        <th mat-header-cell *matHeaderCellDef> 둘째날 </th>
+                        <td mat-cell *matCellDef="let element">
+                            <mat-checkbox (change)="check($event.checked, element.second)" [formControlName]="element.second"></mat-checkbox>
+                        </td>
+                    </ng-container>
+                    
+                    <ng-container matColumnDef="third">
+                        <th mat-header-cell *matHeaderCellDef> 셋째날 </th>
+                        <td mat-cell *matCellDef="let element">
+                            <mat-checkbox (change)="check($event.checked, element.third)" [formControlName]="element.third"></mat-checkbox>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="fourth">
+                        <th mat-header-cell *matHeaderCellDef> 넷째날 </th>
+                        <td mat-cell *matCellDef="let element">
+                            <mat-checkbox (change)="check($event.checked, element.fourth)" [formControlName]="element.fourth"></mat-checkbox>
+                        </td>
+                    </ng-container>
+                    
+                    <tr mat-header-row *matHeaderRowDef="['period', 'first', 'second', 'third', 'fourth']"></tr>
+                    <tr mat-row *matRowDef="let row; columns: ['period', 'first', 'second', 'third', 'fourth'];"></tr>
+                </table>
+            </div>
+            <div>
+                <button mat-stroked-button routerLink="/retreat">이전으로</button>
+                <button mat-raised-button type="submit">{{(retreatRegistered | async) ? "수정" : "등록"}}하기</button>
+            </div>
         </form>
     </mat-sidenav-content>
 </mat-sidenav-container>

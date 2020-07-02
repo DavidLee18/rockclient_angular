@@ -1,1 +1,56 @@
-<p>leaders works!</p>
+<mat-toolbar>
+    <button mat-icon-button (click)="nav.toggle()">
+        <mat-icon>menu</mat-icon>
+    </button>
+    <span>리더 관리</span>
+    <span class="spacer"></span>
+    <button mat-icon-button (click)="openBSheet()"><mat-icon>add</mat-icon></button>
+    <button mat-icon-button [matMenuTriggerFor]="account"><mat-icon [class.grey]="!(loggedIn | async)">account_circle</mat-icon></button>
+    <mat-menu #account="matMenu">
+        <ng-template matMenuContent>
+            <button mat-menu-item disabled>{{(loggedIn | async) ? "로그인 됨" : "로그인 안 됨"}}</button>
+            <button mat-menu-item [routerLink]="(loggedIn | async) ? null : '/login'" (click)="logout()">{{(loggedIn | async) ? "로그아웃하기" : "로그인하기"}}</button>
+        </ng-template>
+    </mat-menu>
+</mat-toolbar>
+<mat-sidenav-container>
+    <mat-sidenav #nav>
+        <mat-nav-list>
+            <mat-list-item *ngFor="let route of routes" [routerLink]="route.path" (click)="nav.close()">
+                <mat-icon *ngIf="route.icon">{{route?.icon}}</mat-icon>
+                <a mat-list-item>{{route.label}}</a>
+            </mat-list-item>
+        </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <mat-card *ngFor="let leader of leaders | async">
+            <mat-card-header>
+                <mat-card-title>{{leader.name}}</mat-card-title>
+                <mat-card-subtitle>{{leader.mobile}}</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+                <mat-list>
+                    <mat-list-item>멤버 ID: {{leader.memberId}}</mat-list-item>
+                    <mat-list-item>리더 ID: {{leader.id}}</mat-list-item>
+                </mat-list>
+                <mat-form-field class="example-chip-list" apperance="fill">
+                    <mat-label>담당 캠퍼스</mat-label>
+                    <mat-chip-list #campusesChips>
+                      <mat-chip *ngFor="let campus of leader.campuses" [selectable]="false" removable (removed)="removeCampus(leader.id, campus, leader.campuses)">
+                        {{campus}}
+                        <mat-icon matChipRemove>cancel</mat-icon>
+                      </mat-chip>
+                    </mat-chip-list>
+                    <mat-select (selectionChange)="addCampus(leader.id, $event.value, leader.campuses)">
+                        <mat-option *ngFor="let campus of campuses" [value]="campus">
+                          {{campus}}
+                        </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+            </mat-card-content>
+            <mat-card-actions>
+                <button mat-icon-button (click)="unsetLeader(leader.id)"><mat-icon>delete</mat-icon></button>
+            </mat-card-actions>
+        </mat-card>
+    </mat-sidenav-content>
+</mat-sidenav-container>
