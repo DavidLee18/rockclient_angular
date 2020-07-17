@@ -22,7 +22,7 @@ export class RetreatRegisterComponent implements OnInit {
     position: ['', Validators.required],
     gbs: ['', Validators.required],
     lecture: [''],
-    attendAll: [false],
+    attendAll: [true],
     dayTime: this._builder.group({
       D1_T1: [false], D1_T2: [false], D1_T3: [false], D1_T4: [false],
       D2_T1: [false], D2_T2: [false], D2_T3: [false], D2_T4: [false],
