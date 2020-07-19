@@ -50,11 +50,11 @@
                     <mat-select formControlName="lecture">
                         <mat-option *ngFor="let option of lectures" [value]="option">{{option}}</mat-option>
                     </mat-select>
-                    <!-- <mat-error *ngIf="form.get('lecture').errors?.required">선택식 강의를 선택하세요</mat-error> -->
+                    <mat-error *ngIf="form.get('lecture').errors?.required">선택식 강의를 선택하세요</mat-error>
                 </mat-form-field>
             </div>
-            <div *ngIf="!(retreatRegistered | async) && false">
-                <h3>수련회 참석 여부</h3>
+            <div *ngIf="!(retreatRegistered | async)">
+                <h3>수련회 GBS 참석 여부</h3>
                 <mat-slide-toggle (change)="onToggled($event.checked)" formControlName="attendAll">전일 참석</mat-slide-toggle>
                 <mat-error *ngIf="form.get('attendAll').errors?.invalid; else clean">아래 표에서 적어도 하나 이상은 선택하세요</mat-error>
                 <ng-template #clean>
@@ -88,16 +88,9 @@
                             <mat-checkbox (change)="check($event.checked, element.third)" [formControlName]="element.third"></mat-checkbox>
                         </td>
                     </ng-container>
-
-                    <ng-container matColumnDef="fourth">
-                        <th mat-header-cell *matHeaderCellDef> 넷째날 </th>
-                        <td mat-cell *matCellDef="let element">
-                            <mat-checkbox (change)="check($event.checked, element.fourth)" [formControlName]="element.fourth"></mat-checkbox>
-                        </td>
-                    </ng-container>
                     
-                    <tr mat-header-row *matHeaderRowDef="['period', 'first', 'second', 'third', 'fourth']"></tr>
-                    <tr mat-row *matRowDef="let row; columns: ['period', 'first', 'second', 'third', 'fourth'];"></tr>
+                    <tr mat-header-row *matHeaderRowDef="['period', 'first', 'second', 'third']"></tr>
+                    <tr mat-row *matRowDef="let row; columns: ['period', 'first', 'second', 'third'];"></tr>
                 </table>
             </div>
             <div>

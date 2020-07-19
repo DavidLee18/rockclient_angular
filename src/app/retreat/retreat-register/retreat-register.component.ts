@@ -22,12 +22,9 @@ export class RetreatRegisterComponent implements OnInit {
     position: ['', Validators.required],
     gbs: ['', Validators.required],
     lecture: [''],
-    attendAll: [true],
+    attendAll: [false],
     dayTime: this._builder.group({
-      D1_T1: [false], D1_T2: [false], D1_T3: [false], D1_T4: [false],
-      D2_T1: [false], D2_T2: [false], D2_T3: [false], D2_T4: [false],
-      D3_T1: [false], D3_T2: [false], D3_T3: [false], D3_T4: [false],
-      D4_T1: [false], D4_T2: [false], D4_T3: [false], D4_T4: [false],
+      D1: [false], D2: [false], D3: [false]
     }),
   });
   retreatRegistered = this._service.retreatRegistered;
@@ -51,11 +48,15 @@ export class RetreatRegisterComponent implements OnInit {
     "없음",
   ];
   dayTimes = [
-    { period: '아침', first: 'D1_T1', second: 'D2_T1', third: 'D3_T1', fourth: 'D4_T1' },
-    { period: '점심', first: 'D1_T2', second: 'D2_T2', third: 'D3_T2', fourth: 'D4_T2' },
-    { period: '저녁', first: 'D1_T3', second: 'D2_T3', third: 'D3_T3', fourth: 'D4_T3' },
-    { period: '숙박', first: 'D1_T4', second: 'D2_T4', third: 'D3_T4', fourth: 'D4_T4' },
+    { period: '참석 여부', first: 'D1', second: 'D2', third: 'D3' },
   ];
+
+  readonly dayTimeMaps = {
+    'D1': ['D1_T1', 'D1_T2', 'D1_T3', 'D1_T4'],
+    'D2': ['D2_T1', 'D2_T2', 'D2_T3', 'D2_T4'],
+    'D3': ['D3_T1', 'D3_T2', 'D3_T3', 'D3_T4'],
+    'D4': ['D4_T1', 'D4_T2', 'D4_T3', 'D4_T4'],
+  };
 
   constructor(private _service: RockService, private _router: Router, private _snackbar: MatSnackBar, private _builder: FormBuilder) {}
   
@@ -121,7 +122,7 @@ export class RetreatRegisterComponent implements OnInit {
         lectureHope: r ? undefined : this.form.get('lecture').value,
         attendAll: r ? undefined : Object.values(dt.controls).every(c => c.value),
         dayTimeList: r ? undefined : Object.values(dt.controls).every(c => c.value) ? null
-        : Object.entries(dt.controls).reduce((prev, [name, control]) => control.value ? [...prev, name] : prev, []),
+        : Object.entries(dt.controls).reduce((prev, [name, control]) => control.value ? [...prev, ...this.dayTimeMaps[name]] : prev, []),
       };
       console.log(JSON.stringify(resume));
       return r ? this._service.editRetreat(resume) : this._service.registerRetreat(resume);
