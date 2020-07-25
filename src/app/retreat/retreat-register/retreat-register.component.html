@@ -22,7 +22,7 @@
         </mat-nav-list>
     </mat-sidenav>
     <mat-sidenav-content>
-        <form [formGroup]="form" (ngSubmit)="submit()">
+        <form *ngIf="!registerSucceeded" [formGroup]="form" (ngSubmit)="submit()">
             <div>
                 <mat-form-field appearance="fill">
                     <mat-label>수련회 GBS</mat-label>
@@ -54,7 +54,7 @@
                 </mat-form-field>
             </div>
             <div *ngIf="!(retreatRegistered | async)">
-                <h3>수련회 GBS 참석 여부</h3>
+                <h3><strong>수련회 GBS 참석 여부</strong></h3>
                 <mat-slide-toggle (change)="onToggled($event.checked)" formControlName="attendAll">전일 참석</mat-slide-toggle>
                 <mat-error *ngIf="form.get('attendAll').errors?.invalid; else clean">아래 표에서 적어도 하나 이상은 선택하세요</mat-error>
                 <ng-template #clean>
@@ -92,11 +92,16 @@
                     <tr mat-header-row *matHeaderRowDef="['period', 'first', 'second', 'third']"></tr>
                     <tr mat-row *matRowDef="let row; columns: ['period', 'first', 'second', 'third'];"></tr>
                 </table>
+                <h4><strong>*수련회 참석 여부가 아닌 수련회 GBS 참석 여부입니다!</strong></h4>
             </div>
             <div>
                 <button mat-stroked-button routerLink="/retreat">이전으로</button>
                 <button mat-raised-button type="submit">{{(retreatRegistered | async) ? "수정" : "등록"}}하기</button>
             </div>
         </form>
+        <section *ngIf="registerSucceeded">
+            <h2>축하합니다!</h2>
+            <div>수련회 {{ (retreatRegistered | async) ? "수정" : "등록" }}을 마쳤습니다. <br> 수련회 성공하세요!</div>
+        </section>
     </mat-sidenav-content>
 </mat-sidenav-container>

@@ -7,6 +7,7 @@ import { FormBuilder, Validators, ValidatorFn, AbstractControl, FormGroup } from
 import { map, concatAll, pluck } from 'rxjs/operators';
 import { zip, of } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-retreat-register',
@@ -28,6 +29,7 @@ export class RetreatRegisterComponent implements OnInit {
     }),
   });
   retreatRegistered = this._service.retreatRegistered;
+  registerSucceeded = false;
   readonly lectures = [
     "성락교회 캠퍼스 베뢰아의 사명",
     "성장 그리고 사명",
@@ -124,10 +126,11 @@ export class RetreatRegisterComponent implements OnInit {
         dayTimeList: r ? undefined : Object.values(dt.controls).every(c => c.value) ? null
         : Object.entries(dt.controls).reduce((prev, [name, control]) => control.value ? [...prev, ...this.dayTimeMaps[name]] : prev, []),
       };
-      console.log(JSON.stringify(resume));
+      if(!environment.production) { console.log(JSON.stringify(resume)); }
       return r ? this._service.editRetreat(resume) : this._service.registerRetreat(resume);
     }), concatAll());
     zip(registeredOrEdited, this.retreatRegistered).subscribe(([registered, already]) => {
+      this.registerSucceeded = registered;
       if (registered) {
         this._service.openDefault(this._snackbar, `수련회 ${already ? '수정' : '등록'}을 완료했습니다.`);
       } else {
