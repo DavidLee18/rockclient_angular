@@ -56,7 +56,7 @@
             <div *ngIf="!(retreatRegistered | async)">
                 <h3><strong>수련회 GBS 참석 여부</strong></h3>
                 <mat-slide-toggle (change)="onToggled($event.checked)" formControlName="attendAll">전일 참석</mat-slide-toggle>
-                <mat-error *ngIf="form.get('attendAll').errors?.invalid; else clean">아래 표에서 적어도 하나 이상은 선택하세요</mat-error>
+                <mat-error *ngIf="false; else clean">아래 표에서 적어도 하나 이상은 선택하세요</mat-error>
                 <ng-template #clean>
                     <br>
                     <mat-hint>전일 참석인 경우 체크해주시고, 아닐 시 아래 표에서 참가하는 시간을 선택하세요</mat-hint>

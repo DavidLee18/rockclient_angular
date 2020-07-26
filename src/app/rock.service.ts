@@ -62,8 +62,9 @@ export interface RetreatResume {
     originalGbs?: string
     retreatGbs: string
     position: string
+    attendType?: string
     attendAll?: boolean
-    dayTimeList?: string[];
+    dayTimeList?: string[]
 }
 
 interface UserResume {

@@ -112,16 +112,15 @@ export class RetreatRegisterComponent implements OnInit {
   submit() {
     const registeredOrEdited = zip(this.retreatRegistered, this._uid).pipe(map(([r, uid]) => {
       let dt = this.form.get('dayTime') as FormGroup;
-      if(!r) {
-        if(!this.ValidateDayTime(this.form)) return of(false);
-      }
-      else if(this.form.invalid) return of(false);
+      //if(!r && !this.ValidateDayTime(this.form)) return of(false);
+      if(this.form.invalid) return of(false);
       const resume: RetreatResume = {
         memberUid: uid,
         retreatGbs: this.form.get('retreat_gbs').value,
         position: this.form.get('position').value,
         originalGbs: r ? undefined : this.form.get('gbs').value,
         lectureHope: r ? undefined : this.form.get('lecture').value,
+        attendType: "GBS",
         attendAll: r ? undefined : Object.values(dt.controls).every(c => c.value),
         dayTimeList: r ? undefined : Object.values(dt.controls).every(c => c.value) ? null
         : Object.entries(dt.controls).reduce((prev, [name, control]) => control.value ? [...prev, ...this.dayTimeMaps[name]] : prev, []),
