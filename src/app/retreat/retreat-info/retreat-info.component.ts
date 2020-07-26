@@ -4,6 +4,8 @@ import { retreatRouteNames } from '../retreat-routing.module';
 import { RockService, Info } from 'src/app/rock.service';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
+import { tap } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-retreat-info',
@@ -19,7 +21,7 @@ export class RetreatInfoComponent implements OnInit {
   already = this._service.retreatRegistered;
 
   constructor(private _service: RockService, private _router: Router) {
-    this.info = _service.MyInfo;
+    this.info = _service.MyInfo.pipe(tap(info => { if(!environment.production) console.log(JSON.stringify(info)); }));
     this._service.loggedIn.subscribe((val) => this.loggedIn = val);
   }
 

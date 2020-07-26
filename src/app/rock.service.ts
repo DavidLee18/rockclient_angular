@@ -17,10 +17,12 @@ export interface Info {
     mobile: string
     uid: string
     grade: Grade
-    retreatGbsInfo?: {
+    retreatInfo?: {
         retreatId: number
         gbs: string
         position: string
+        attendAll: boolean
+        dayTimeList: string[]
     }
     gbsInfo?: {
         gbs: string
@@ -90,13 +92,15 @@ export class RockService {
         'Authorization': 'Basic YWRtaW46ZGh3bHJybGVoISEh',
         'Content-Type': 'application/json'
     }
+
+    static tuple = <T extends any[]>(...args: T): T => args;
     
     constructor(private http: HttpClient, private auth: AngularFireAuth) {
         this.uid = auth.authState.pipe(pluck('uid'));
     }
 
     static nonNull(object: any) {
-        return Object.values(object).every(v => v);
+        return Object.values(object).every(v => v != null && v != undefined);
     }
 
     login(id: string, password: string) {
@@ -184,7 +188,7 @@ export class RockService {
     }
 
     get retreatRegistered() {
-        return this.MyInfo.pipe(map(info => RockService.nonNull(info.retreatGbsInfo)));
+        return this.MyInfo.pipe(map(info => RockService.nonNull(info.retreatInfo)));
     }
 
     setLeader(memId: number, grade: Grade = Grade.leader) {

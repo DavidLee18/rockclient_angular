@@ -44,11 +44,13 @@
                     <ng-template #retreatGbsElse>
                         <mat-list-item>최근 수련회 GBS 정보 없음</mat-list-item>
                     </ng-template>
-                    <mat-list *ngIf="nonNull(info.retreatGbsInfo); else retreatGbsElse">
+                    <mat-list *ngIf="nonNull(info.retreatInfo); else retreatGbsElse">
                         최근 수련회 GBS 정보: 
-                        <mat-list-item>참가 수련회 ID: {{ info.retreatGbsInfo.retreatId }}</mat-list-item>
-                        <mat-list-item>과정: {{ info.retreatGbsInfo.gbs }}</mat-list-item>
-                        <mat-list-item>조원구분: {{ info.retreatGbsInfo.position }}</mat-list-item>
+                        <mat-list-item>참가 수련회 ID: {{ info.retreatInfo.retreatId }}</mat-list-item>
+                        <mat-list-item>과정: {{ info.retreatInfo.gbs }}</mat-list-item>
+                        <mat-list-item>조원구분: {{ info.retreatInfo.position }}</mat-list-item>
+                        <mat-list-item>{{ info.retreatInfo.attendAll ? "수련회 전일 참석" : "수련회 부분 참석" }}</mat-list-item>
+                        <mat-list-item>참석 날짜 및 시간: {{ info.retreatInfo.dayTimeList.join(', ') }}</mat-list-item>
                     </mat-list>
                 </mat-list>
             </mat-card-content>

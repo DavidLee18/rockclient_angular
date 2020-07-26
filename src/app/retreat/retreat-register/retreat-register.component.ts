@@ -64,18 +64,18 @@ export class RetreatRegisterComponent implements OnInit {
   
   ngOnInit() {
     this._service.MyInfo.subscribe((info) => {
-      if(RockService.nonNull(info.gbsInfo) && RockService.nonNull(info.retreatGbsInfo)) {
-        this.form.get('position').setValue(info.retreatGbsInfo.position);
-        this.form.get('retreat_gbs').setValue(info.retreatGbsInfo.gbs);
+      if(RockService.nonNull(info.gbsInfo) && RockService.nonNull(info.retreatInfo)) {
+        this.form.get('position').setValue(info.retreatInfo.position);
+        this.form.get('retreat_gbs').setValue(info.retreatInfo.gbs);
         this.form.get('gbs').setValue(info.gbsInfo.gbs);
         this.form.get('gbs').disable();
-        this.form.get('attendAll').disable();
-        this.form.get('dayTime').disable();
+        this.form.get('attendAll').setValue(info.retreatInfo.attendAll);
+        let dt = this.form.get('dayTime') as FormGroup;
+        let days = info.retreatInfo.dayTimeList.reduce((prev, curr) => Object.keys(this.dayTimeMaps).findIndex(day => curr.includes(day)) != -1 ? [...prev, Object.keys(this.dayTimeMaps).find(day => curr.includes(day))] : prev, []);
+        Object.entries(dt.controls).forEach(([name, control]) => { if(days.includes(name) || info.retreatInfo.attendAll) control.setValue(true); });
       } else {
         this.form.get('gbs').setValue('');
         this.form.get('gbs').enable();
-        this.form.get('attendAll').enable();
-        this.form.get('dayTime').enable();
       }
     });
   }
@@ -120,9 +120,9 @@ export class RetreatRegisterComponent implements OnInit {
         position: this.form.get('position').value,
         originalGbs: r ? undefined : this.form.get('gbs').value,
         lectureHope: r ? undefined : this.form.get('lecture').value,
-        attendType: "GBS",
-        attendAll: r ? undefined : Object.values(dt.controls).every(c => c.value),
-        dayTimeList: r ? undefined : Object.values(dt.controls).every(c => c.value) ? null
+        attendType: r ? undefined : 'GBS',
+        attendAll: Object.values(dt.controls).every(c => c.value),
+        dayTimeList: Object.values(dt.controls).every(c => c.value) ? null
         : Object.entries(dt.controls).reduce((prev, [name, control]) => control.value ? [...prev, ...this.dayTimeMaps[name]] : prev, []),
       };
       if(!environment.production) { console.log(JSON.stringify(resume)); }
