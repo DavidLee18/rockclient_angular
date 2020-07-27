@@ -18,6 +18,7 @@ export class LoginComponent {
   });
 
   loggedIn: boolean;
+  passVisible = false;
 
   readonly routes = routeNames;
 

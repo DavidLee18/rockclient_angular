@@ -40,6 +40,7 @@ import { LogInDialog } from './auth.guard';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from "@angular/material/chips";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
+import { ErrorDialog } from './rock.service';
 
 registerLocaleData(ko.default, 'ko', koExtra.default);
 
@@ -54,6 +55,7 @@ registerLocaleData(ko.default, 'ko', koExtra.default);
     DiscardChangeDialog,
     LogInDialog,
     MemberSearchBottomSheet,
+    ErrorDialog,
   ],
   imports: [
     BrowserModule,
@@ -91,6 +93,7 @@ registerLocaleData(ko.default, 'ko', koExtra.default);
     DiscardChangeDialog,
     LogInDialog,
     MemberSearchBottomSheet,
+    ErrorDialog,
   ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'ko-KR' },

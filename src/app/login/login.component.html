@@ -32,7 +32,10 @@
             </mat-form-field>
             <mat-form-field appearance="fill">
                 <mat-label>비밀번호</mat-label>
-                <input matInput type="password" formControlName="pass" required>
+                <input matInput [type]="passVisible ? 'text' : 'password'" formControlName="pass" required>
+                <button mat-icon-button matSuffix (click)="passVisible = !passVisible">
+                    <mat-icon>{{passVisible ? 'visibility_off' : 'visibility'}}</mat-icon>
+                </button>
                 <mat-error *ngIf="form.get('pass').errors?.required">비밀번호를 입력하세요</mat-error>
             </mat-form-field>
         </div>
