@@ -130,23 +130,26 @@ export class RockService {
         if (error.error instanceof ErrorEvent) {
             // 클라이언트나 네트워크 문제로 발생한 에러.
             console.error('에러 발생: ', error.error.message);
-            this.openDefault(this._snackbar, error.error.message);
+            window.alert(error.error.message);
+             /*this.openDefault(this._snackbar, error.error.message);
             this.openErrorDialog({
                 errorMessage: error.error.message
-            });
+            }); */
         } else {
             // 백엔드에서 실패한 것으로 보낸 에러.
             // 요청으로 받은 에러 객체를 확인하면 원인을 확인할 수 있습니다.
             console.error(`벡엔드 code: ${error.status} (${error.statusText}). 
             body: ${JSON.stringify(error.error)} (${error.message})`);
-
+            window.alert(`벡엔드 code: ${error.status} (${error.statusText}). 
+            body: ${JSON.stringify(error.error)} (${error.message})`);
+            /*
             this.openDefault(this._snackbar, `벡엔드 code: ${error.status} (${error.statusText}). 
             body: ${JSON.stringify(error.error)} (${error.message})`);
 
             this.openErrorDialog({
                 errorMessage: `벡엔드 code: ${error.status} (${error.statusText}). 
                 body: ${JSON.stringify(error.error)} (${error.message})`
-            });
+            }); */
         }
         // 사용자가 이해할 수 있는 에러 메시지를 반환합니다.
         return throwError('Something bad happened; please try again later.');
