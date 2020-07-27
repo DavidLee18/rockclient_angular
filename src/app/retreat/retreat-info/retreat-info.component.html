@@ -50,7 +50,7 @@
                         <mat-list-item>과정: {{ info.retreatInfo.gbs }}</mat-list-item>
                         <mat-list-item>조원구분: {{ info.retreatInfo.position }}</mat-list-item>
                         <mat-list-item>{{ info.retreatInfo.attendAll ? "수련회 전일 참석" : "수련회 부분 참석" }}</mat-list-item>
-                        <mat-list-item>참석 날짜 및 시간: {{ info.retreatInfo.dayTimeList.join(', ') }}</mat-list-item>
+                        <mat-list-item>참석 날짜 및 시간: {{ info.retreatInfo.dayTimeList.length > 0 ? info.retreatInfo.dayTimeList.join(', ') : "없음" }}</mat-list-item>
                     </mat-list>
                 </mat-list>
             </mat-card-content>

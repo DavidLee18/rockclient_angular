@@ -120,7 +120,7 @@ export class RetreatRegisterComponent implements OnInit {
         position: this.form.get('position').value,
         originalGbs: r ? undefined : this.form.get('gbs').value,
         lectureHope: r ? undefined : this.form.get('lecture').value,
-        attendType: r ? undefined : 'GBS',
+        attendType: 'GBS',
         attendAll: Object.values(dt.controls).every(c => c.value),
         dayTimeList: Object.values(dt.controls).every(c => c.value) ? null
         : Object.entries(dt.controls).reduce((prev, [name, control]) => control.value ? [...prev, ...this.dayTimeMaps[name]] : prev, []),
