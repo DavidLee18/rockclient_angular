@@ -177,8 +177,7 @@ export class RockService {
 
     get MyInfo() {
         return this.uid.pipe(map((uid) => {
-            if(uid == null) throw new Error("uid null!");
-            else return this._http.get<Info>(`${this.root}/members/info?uid=${uid}`, {
+            return this._http.get<Info>(`${this.root}/members/info?uid=${uid}`, {
                 headers: {
                     'Accept': 'application/json',
                     ...this.headerBasic
@@ -200,15 +199,9 @@ export class RockService {
     }
 
     registerRetreat(resume: RetreatResume) {
-        return of(resume).pipe(map(resume => {
-            if(resume.attendAll != null
-                && resume.attendAll != undefined
-                && resume.originalGbs
-                && (resume.attendAll && (resume.dayTimeList == null || resume.dayTimeList == undefined || resume.dayTimeList?.length == 0)) || (!resume.attendAll && resume.dayTimeList.length > 0))
-                return this._http.post<RetreatResume>(`${this.root}/retreat/register`, resume, {
-                headers: this.headerBasic, observe: 'response',
-            }); else return throwError("수련회 등록에 필수값 없음");
-        }), concatAll(), pluck('ok'), retry(3), catchError(this.handleError));
+        return this._http.post<RetreatResume>(`${this.root}/retreat/register`, resume, {
+        headers: this.headerBasic, observe: 'response',
+        }).pipe(pluck('ok'), retry(3), catchError(this.handleError));
     }
 
     get retreatRegistered() {
