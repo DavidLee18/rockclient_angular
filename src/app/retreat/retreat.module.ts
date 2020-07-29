@@ -25,6 +25,7 @@ import { MatCheckboxModule } from "@angular/material/checkbox";
 import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 import { MatDialogModule } from '@angular/material/dialog';
 import { DiscardChangeDialog } from '../discard-change.guard';
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 
 
 
@@ -56,6 +57,7 @@ import { DiscardChangeDialog } from '../discard-change.guard';
     MatCheckboxModule,
     MatSlideToggleModule,
     MatDialogModule,
+    MatProgressSpinnerModule,
   ],
   entryComponents: [
     DiscardChangeDialog,

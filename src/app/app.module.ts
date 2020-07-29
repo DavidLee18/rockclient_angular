@@ -41,6 +41,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from "@angular/material/chips";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
 import { ErrorDialog } from './rock.service';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 registerLocaleData(ko.default, 'ko', koExtra.default);
 
@@ -87,6 +88,7 @@ registerLocaleData(ko.default, 'ko', koExtra.default);
     MatCardModule,
     MatChipsModule,
     MatAutocompleteModule,
+    MatProgressSpinnerModule,
   ],
   entryComponents: [
     LoginBottomSheet,

@@ -1,7 +1,7 @@
 import { Injectable, Component, Inject } from "@angular/core";
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { Observable, throwError, of } from 'rxjs';
-import { catchError, retry, map, concatAll, pluck, tap } from 'rxjs/operators';
+import { Observable, throwError, of, NEVER, Subject } from 'rxjs';
+import { catchError, retry, map, concatAll, pluck, tap, multicast } from 'rxjs/operators';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -93,6 +93,11 @@ export class RockService {
         'Authorization': 'Basic YWRtaW46ZGh3bHJybGVoISEh',
         'Content-Type': 'application/json'
     }
+    static readonly firebaseAuthErrorCode = {
+        'auth/invalid-email': '이메일을 잘못 입력했습니다. 올바른 이메일 주소를 입력하세요',
+        'auth-user-not-found': '주어진 이메일에 해당하는 계정을 찾을 수 없습니다. 올바른 계정을 입력하세요',
+        'auth/wrong-password': '비밀번호가 잘못되었습니다. 비밀번호는 적어도 6자여야 합니다',
+    }
 
     static tuple = <T extends any[]>(...args: T): T => args;
     
@@ -101,7 +106,7 @@ export class RockService {
     }
 
     static nonNull(object: any) {
-        return Object.values(object).every(v => v != null && v != undefined);
+        return object != null && object != undefined && Object.values(object)?.every(v => v != null && v != undefined);
     }
 
     login(id: string, password: string) {
@@ -126,37 +131,48 @@ export class RockService {
         }).pipe(retry(3), catchError(this.handleError), pluck('ok'));
     }
 
-    private handleError<T>(error: HttpErrorResponse, caught?: Observable<T>) {
-        if (error.error instanceof ErrorEvent) {
-            // 클라이언트나 네트워크 문제로 발생한 에러.
-            console.error(`에러 발생: ${error.error.message}
-            error: ${JSON.stringify(error)}`);
-            window.alert(`에러 발생: ${error.error.message}
-            error: ${JSON.stringify(error)}`);
-             /*this.openDefault(this._snackbar, error.error.message);
-            this.openErrorDialog({
-                errorMessage: error.error.message
-            }); */
-        } else {
-            // 백엔드에서 실패한 것으로 보낸 에러.
-            // 요청으로 받은 에러 객체를 확인하면 원인을 확인할 수 있습니다.
-            console.error(`벡엔드 code: ${error.status} (${error.statusText}). 
-            body: ${JSON.stringify(error.error)} (${error.message})
-            error: ${JSON.stringify(error)}`);
-            window.alert(`벡엔드 code: ${error.status} (${error.statusText}). 
-            body: ${JSON.stringify(error.error)} (${error.message})
-            error: ${JSON.stringify(error)}`);
-            /*
-            this.openDefault(this._snackbar, `벡엔드 code: ${error.status} (${error.statusText}). 
-            body: ${JSON.stringify(error.error)} (${error.message})`);
-
-            this.openErrorDialog({
-                errorMessage: `벡엔드 code: ${error.status} (${error.statusText}). 
-                body: ${JSON.stringify(error.error)} (${error.message})`
-            }); */
+    private handleError<T>(error: any, caught?: Observable<T>) {
+        if(error instanceof HttpErrorResponse){
+            if (error.error instanceof ErrorEvent) {
+                // 클라이언트나 네트워크 문제로 발생한 에러.
+                console.error(`에러 발생: ${error.error.message}
+                error: ${JSON.stringify(error)}`);
+                window.alert(`에러 발생: ${error.error.message}
+                error: ${JSON.stringify(error)}`);
+            }
+            else if(error.headers.get('Content-Type') == 'application/json') {
+                if(error.error?.data) {
+                    //backend-sent error
+                    console.error(error.error.data);
+                    window.alert(error.error.data);
+                }
+            }
+            else if(error.headers.get('Content-Type') == 'text/html') {
+                //backend-sent, html-shaped error
+                const body = (error.error as string).split('<body')[1].substring(1);
+                console.error(body);
+                window.alert(body);
+            }
         }
-        // 사용자가 이해할 수 있는 에러 메시지를 반환합니다.
-        return throwError('Something bad happened; please try again later.');
+        else if(typeof error == "string") {
+            //etc: string error
+            console.error(error);
+            window.alert(error);
+        }
+        else if(error?.code && error?.message) {
+            //firebase-sent error
+            console.error(`${error.code}\n${error.message}`);
+            window.alert(`${RockService.firebaseAuthErrorCode[error.code]}`);
+        }
+        else if(!RockService.nonNull(error)) {
+            //do nothing; keep silent
+        }
+        else {
+            //unknown error
+            console.error(`에러: ${JSON.stringify(error)}\n${typeof error}\n${error}`);
+            window.alert(`에러: ${error}`);
+        }
+        return NEVER;
     }
 
     private openErrorDialog(data: ErrorDialogData) {

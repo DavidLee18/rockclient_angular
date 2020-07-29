@@ -4,6 +4,7 @@
     </button>
     <span>리더 관리</span>
     <span class="spacer"></span>
+    <mat-spinner diameter="30" stroke-width="5" *ngIf="(leaders | async) == null"></mat-spinner>
     <button mat-icon-button (click)="openBSheet()"><mat-icon>add</mat-icon></button>
     <button mat-icon-button [matMenuTriggerFor]="account"><mat-icon [class.grey]="!(loggedIn | async)">account_circle</mat-icon></button>
     <mat-menu #account="matMenu">

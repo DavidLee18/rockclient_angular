@@ -34,14 +34,15 @@
                 <mat-label>비밀번호</mat-label>
                 <input matInput [type]="passVisible ? 'text' : 'password'" formControlName="pass" required>
                 <button mat-icon-button matSuffix (click)="passVisible = !passVisible">
-                    <mat-icon>{{passVisible ? 'visibility_off' : 'visibility'}}</mat-icon>
+                    <mat-icon>{{passVisible ? 'visibility' : 'visibility_off'}}</mat-icon>
                 </button>
                 <mat-error *ngIf="form.get('pass').errors?.required">비밀번호를 입력하세요</mat-error>
+                <mat-error *ngIf="form.get('pass').errors?.minlength">비밀번호는 6자 이상이어야 합니다</mat-error>
             </mat-form-field>
         </div>
         <div>
             <button mat-stroked-button routerLink="/sign-up">회원가입</button>
-            <button mat-raised-button type="submit" [disabled]="form?.invalid" cdkFocusInitial>로그인</button>
+            <button mat-raised-button type="submit" (click)="toSubmit = true" [disabled]="form?.invalid" cdkFocusInitial>로그인</button>
             <button mat-stroked-button (click)="openSheet()">비밀번호를 잊으셨나요?</button>
         </div>
         </form>

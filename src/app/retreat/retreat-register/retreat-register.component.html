@@ -4,6 +4,7 @@
     </button>
     <span>수련회 {{(retreatRegistered | async) ? "수정" : "등록"}}</span>
     <span class="spacer"></span>
+    <mat-spinner diameter="30" stroke-width="5" *ngIf="(myInfo | async) == null || registerInProgress"></mat-spinner>
     <button mat-icon-button [matMenuTriggerFor]="account"><mat-icon [class.grey]="!(loggedIn | async)">account_circle</mat-icon></button>
     <mat-menu #account="matMenu">
         <ng-template matMenuContent>
@@ -96,7 +97,7 @@
             </div>
             <div>
                 <button mat-stroked-button routerLink="/retreat">이전으로</button>
-                <button mat-raised-button type="submit">{{(retreatRegistered | async) ? "수정" : "등록"}}하기</button>
+                <button mat-raised-button type="submit" [disabled]="registerInProgress">{{(retreatRegistered | async) ? "수정" : "등록"}}하기</button>
             </div>
         </form>
         <section *ngIf="registerSucceeded">

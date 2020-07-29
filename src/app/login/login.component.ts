@@ -14,11 +14,12 @@ import { Router } from '@angular/router';
 export class LoginComponent {
   form = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
-    pass: new FormControl('', Validators.required),
+    pass: new FormControl('', [Validators.required, Validators.minLength(6)]),
   });
 
   loggedIn: boolean;
   passVisible = false;
+  toSubmit = false;
 
   readonly routes = routeNames;
 
@@ -28,7 +29,7 @@ export class LoginComponent {
 
   openSheet() { this._bSheet.open(LoginBottomSheet); }
 
-  login(email: string, pass: string) { this._service.login(email, pass); }
+  login(email: string, pass: string) { if(this.toSubmit) { this._service.login(email, pass); } }
 
   logout = () => this._service.logout();
 }

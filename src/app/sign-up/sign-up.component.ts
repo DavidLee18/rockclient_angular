@@ -14,7 +14,7 @@ export class SignUpComponent implements OnInit {
   form = this._builder.group({
     email: ['', Validators.compose([Validators.required, Validators.email])],
     pass: ['', Validators.compose([Validators.required, Validators.minLength(6)])],
-    passAgain: ['', Validators.required],
+    passAgain: ['', Validators.compose([Validators.required, Validators.minLength(6)])],
     name: ['', Validators.required],
     mobile: ['', Validators.compose([Validators.required, Validators.pattern(/^\d{9,11}$/)])],
     birthDate: ['', Validators.required],
@@ -29,6 +29,8 @@ export class SignUpComponent implements OnInit {
 
   readonly routes = routeNames;
   passVisible = false; passAgainVisible = false;
+  signUpInProgress = false;
+  toSubmit = false;
 
   readonly campuses = [
     '강변', '강북', '강원', 
@@ -51,7 +53,7 @@ export class SignUpComponent implements OnInit {
   
   get passAgain(): ValidatorFn {
     return (control: AbstractControl) => {
-      if (control.get('pass').value != control.get('passAgain').value) {
+      if (control.get('pass').value.trim() != "" && control.get('pass').value != control.get('passAgain').value) {
         control.get('passAgain').setErrors({ different: true });
       }
       return null;
@@ -61,25 +63,29 @@ export class SignUpComponent implements OnInit {
   ngOnInit() {}
 
   signUp() {
-    this._service.signUp({
-      email: this.form.get('email').value,
-      password: this.form.get('pass').value,
-      name: this.form.get('name').value,
-      mobile: this.form.get('mobile').value,
-      birthDate: this.form.get('birthDate').value,
-      sex: this.form.get('sex').value,
-      campus: this.form.get('campus').value,
-      address: this.form.get('address').value,
-      school: this.form.get('school').value,
-      major: this.form.get('major').value,
-      grade: this.form.get('grade').value,
-      guide: this.form.get('guide').value,
-    }).subscribe(signedUp => {
-      if (signedUp) {
-        let ref = this._service.openDefault(this._snackBar, '회원가입에 성공했습니다.', '로그인하기');
-        ref.onAction().subscribe(() => { this._router.navigateByUrl('/login'); });
-      } else this._service.openDefault(this._snackBar, '회원가입에 실패했습니다.');
-    });
+    if(this.toSubmit) {
+      this.signUpInProgress = true;
+      this._service.signUp({
+        email: this.form.get('email').value,
+        password: this.form.get('pass').value,
+        name: this.form.get('name').value,
+        mobile: this.form.get('mobile').value,
+        birthDate: this.form.get('birthDate').value,
+        sex: this.form.get('sex').value,
+        campus: this.form.get('campus').value,
+        address: this.form.get('address').value,
+        school: this.form.get('school').value,
+        major: this.form.get('major').value,
+        grade: this.form.get('grade').value,
+        guide: this.form.get('guide').value,
+      }).subscribe(signedUp => {
+        if (signedUp) {
+          let ref = this._service.openDefault(this._snackBar, '회원가입에 성공했습니다.', '로그인하기');
+          ref.onAction().subscribe(() => { this._router.navigateByUrl('/login'); });
+        } else this._service.openDefault(this._snackBar, '회원가입에 실패했습니다.');
+      });
+      this.signUpInProgress = false;
+    }
   }
 
 }

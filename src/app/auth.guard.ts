@@ -2,7 +2,7 @@ import { Injectable, Component } from '@angular/core';
 import { CanActivate, CanActivateChild, CanDeactivate, CanLoad, Route, UrlSegment, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { RockService } from './rock.service';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 @Injectable({
@@ -15,13 +15,15 @@ export class AuthGuard implements CanActivate, CanActivateChild, CanDeactivate<a
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    if(next.data && next.data.names) return this._service.MyInfo.pipe(map(info => next.data.names.includes(info.name)));
-    return this._service.loggedIn.pipe(map(l => {
-      if(l) return true;
-      else {
+    if(next.data && next.data.names) return this._service.MyInfo.pipe(map(info => {
+      if(info == null || info == undefined) {
         this._dialog.open(LogInDialog).afterClosed().subscribe(() => this._router.navigateByUrl('/login'));
         return false;
       }
+      return (next.data.names as string[]).includes(info.name);
+    }));
+    return this._service.loggedIn.pipe(tap(l => {
+      if(!l) this._dialog.open(LogInDialog).afterClosed().subscribe(() => this._router.navigateByUrl('/login'));
     }));
   }
   canActivateChild(

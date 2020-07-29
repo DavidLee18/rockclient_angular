@@ -18,6 +18,7 @@ export class RetreatRegisterComponent implements OnInit {
   readonly routes = routeNames.concat(retreatRouteNames);
   loggedIn = this._service.loggedIn;
   private _uid = this._service.MyInfo.pipe(pluck('uid'));
+  myInfo = this._service.MyInfo;
   form = this._builder.group({
     retreat_gbs: ['', Validators.required],
     position: ['', Validators.required],
@@ -30,6 +31,7 @@ export class RetreatRegisterComponent implements OnInit {
   });
   retreatRegistered = this._service.retreatRegistered;
   registerSucceeded = false;
+  registerInProgress = false;
   readonly lectures = [
     "성락교회 캠퍼스 베뢰아의 사명",
     "성장 그리고 사명",
@@ -63,7 +65,7 @@ export class RetreatRegisterComponent implements OnInit {
   constructor(private _service: RockService, private _router: Router, private _snackbar: MatSnackBar, private _builder: FormBuilder) {}
   
   ngOnInit() {
-    this._service.MyInfo.subscribe((info) => {
+    this.myInfo.subscribe((info) => {
       if(RockService.nonNull(info.gbsInfo) && RockService.nonNull(info.retreatInfo)) {
         this.form.get('position').setValue(info.retreatInfo.position);
         this.form.get('retreat_gbs').setValue(info.retreatInfo.gbs);
@@ -110,31 +112,35 @@ export class RetreatRegisterComponent implements OnInit {
   logout() { this._service.logout(); this._router.navigateByUrl('/login'); }
 
   submit() {
-    const registeredOrEdited = zip(this.retreatRegistered, this._uid).pipe(map(([r, uid]) => {
-      let dt = this.form.get('dayTime') as FormGroup;
-      //if(!r && !this.ValidateDayTime(this.form)) return of(false);
-      if(this.form.invalid) return of(false);
-      const resume: RetreatResume = {
-        memberUid: uid,
-        retreatGbs: this.form.get('retreat_gbs').value,
-        position: this.form.get('position').value,
-        originalGbs: r ? undefined : this.form.get('gbs').value,
-        lectureHope: r ? undefined : this.form.get('lecture').value,
-        attendType: 'GBS',
-        attendAll: Object.values(dt.controls).every(c => c.value),
-        dayTimeList: Object.values(dt.controls).every(c => c.value) ? null
-        : Object.entries(dt.controls).reduce((prev, [name, control]) => control.value ? [...prev, ...this.dayTimeMaps[name]] : prev, []),
-      };
-      if(!environment.production) { console.log(JSON.stringify(resume)); }
-      return r ? this._service.editRetreat(resume) : this._service.registerRetreat(resume);
-    }), concatAll());
-    zip(registeredOrEdited, this.retreatRegistered).subscribe(([registered, already]) => {
-      this.registerSucceeded = registered;
-      if (registered) {
-        this._service.openDefault(this._snackbar, `수련회 ${already ? '수정' : '등록'}을 완료했습니다.`);
-      } else {
-        this._service.openDefault(this._snackbar, `수련회 ${already ? '수정' : '등록'}을 실패했습니다.`);
-      }
-    });
+    if(this.form.valid) {
+      this.registerInProgress = true;
+      const registeredOrEdited = zip(this.retreatRegistered, this._uid).pipe(map(([r, uid]) => {
+        let dt = this.form.get('dayTime') as FormGroup;
+        //if(!r && !this.ValidateDayTime(this.form)) return of(false);
+        //if(this.form.invalid) return of(false);
+        const resume: RetreatResume = {
+          memberUid: uid,
+          retreatGbs: this.form.get('retreat_gbs').value,
+          position: this.form.get('position').value,
+          originalGbs: r ? undefined : this.form.get('gbs').value,
+          lectureHope: r ? undefined : this.form.get('lecture').value,
+          attendType: 'GBS',
+          attendAll: Object.values(dt.controls).every(c => c.value),
+          dayTimeList: Object.values(dt.controls).every(c => c.value) ? null
+          : Object.entries(dt.controls).reduce((prev, [name, control]) => control.value ? [...prev, ...this.dayTimeMaps[name]] : prev, []),
+        };
+        if(!environment.production) { console.log(JSON.stringify(resume)); }
+        return r ? this._service.editRetreat(resume) : this._service.registerRetreat(resume);
+      }), concatAll());
+      zip(registeredOrEdited, this.retreatRegistered).subscribe(([registered, already]) => {
+        this.registerSucceeded = registered;
+        if (registered) {
+          this._service.openDefault(this._snackbar, `수련회 ${already ? '수정' : '등록'}을 완료했습니다.`);
+        } else {
+          this._service.openDefault(this._snackbar, `수련회 ${already ? '수정' : '등록'}을 실패했습니다.`);
+        }
+      });
+      this.registerInProgress = false;
+    }
   }
 }

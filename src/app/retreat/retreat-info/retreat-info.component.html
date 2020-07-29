@@ -4,6 +4,7 @@
     </button>
     <span>수련회 정보</span>
     <span class="spacer"></span>
+    <mat-spinner diameter="30" stroke-width="5" *ngIf="(info | async) == null"></mat-spinner>
     <button mat-icon-button [matMenuTriggerFor]="account"><mat-icon [class.grey]="!loggedIn">account_circle</mat-icon></button>
     <mat-menu #account="matMenu">
         <ng-template matMenuContent>
