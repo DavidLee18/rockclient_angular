@@ -95,7 +95,7 @@ export class RockService {
     }
     static readonly firebaseAuthErrorCode = {
         'auth/invalid-email': '이메일을 잘못 입력했습니다. 올바른 이메일 주소를 입력하세요',
-        'auth-user-not-found': '주어진 이메일에 해당하는 계정을 찾을 수 없습니다. 올바른 계정을 입력하세요',
+        'auth/user-not-found': '주어진 이메일에 해당하는 계정을 찾을 수 없습니다. 올바른 계정을 입력하세요',
         'auth/wrong-password': '비밀번호가 잘못되었습니다. 비밀번호는 적어도 6자여야 합니다',
     }
 

@@ -26,6 +26,8 @@ import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 import { MatDialogModule } from '@angular/material/dialog';
 import { DiscardChangeDialog } from '../discard-change.guard';
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { MatGridListModule } from "@angular/material/grid-list";
+import { MatChipsModule } from '@angular/material/chips';
 
 
 
@@ -58,6 +60,8 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
     MatSlideToggleModule,
     MatDialogModule,
     MatProgressSpinnerModule,
+    MatGridListModule,
+    MatChipsModule,
   ],
   entryComponents: [
     DiscardChangeDialog,

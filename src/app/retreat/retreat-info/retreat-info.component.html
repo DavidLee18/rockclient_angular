@@ -50,8 +50,47 @@
                         <mat-list-item>참가 수련회 ID: {{ info.retreatInfo.retreatId }}</mat-list-item>
                         <mat-list-item>과정: {{ info.retreatInfo.gbs }}</mat-list-item>
                         <mat-list-item>조원구분: {{ info.retreatInfo.position }}</mat-list-item>
-                        <mat-list-item>{{ info.retreatInfo.attendAll ? "수련회 전일 참석" : "수련회 부분 참석" }}</mat-list-item>
-                        <mat-list-item>참석 날짜 및 시간: {{ info.retreatInfo.dayTimeList.length > 0 ? info.retreatInfo.dayTimeList.join(', ') : "없음" }}</mat-list-item>
+                        <mat-chip-list>
+                            <mat-chip [color]="info.retreatInfo.attendAll ? 'primary' : 'warn'">
+                                <mat-icon>{{ info.retreatInfo.attendAll ? "check" : "error" }}</mat-icon>
+                                {{ info.retreatInfo.attendAll ? "수련회 전일 참석" : "수련회 전일 참석 아님" }}
+                            </mat-chip>
+                        </mat-chip-list>
+                        참석 날짜 및 시간: 
+                        <ng-template #dayTimesNone>
+                            <mat-list-item>{{ info.retreatInfo.attendAll ? "전일참석" : "없음" }}</mat-list-item>
+                        </ng-template>
+                        <table *ngIf="info.retreatInfo.dayTimeList?.length > 0; else dayTimesNone" mat-table [dataSource]="dayTimes" class="mat-elevation-z8">
+                    
+                            <ng-container matColumnDef="period" sticky>
+                                <th mat-header-cell *matHeaderCellDef> 구분 </th>
+                                <td mat-cell *matCellDef="let element"> {{element.period}} </td>
+                            </ng-container>
+                            
+                            <ng-container matColumnDef="first">
+                                <th mat-header-cell *matHeaderCellDef> 첫째날 </th>
+                                <td mat-cell *matCellDef="let element">
+                                    <mat-grid-tile [ngClass]="isOnDay(info.retreatInfo.dayTimeList, element.first) ? 'yellow' : ''"></mat-grid-tile>
+                                </td>
+                            </ng-container>
+                            
+                            <ng-container matColumnDef="second">
+                                <th mat-header-cell *matHeaderCellDef> 둘째날 </th>
+                                <td mat-cell *matCellDef="let element">
+                                    <mat-grid-tile [ngClass]="isOnDay(info.retreatInfo.dayTimeList, element.second) ? 'yellow' : ''"></mat-grid-tile>
+                                </td>
+                            </ng-container>
+                            
+                            <ng-container matColumnDef="third">
+                                <th mat-header-cell *matHeaderCellDef> 셋째날 </th>
+                                <td mat-cell *matCellDef="let element">
+                                    <mat-grid-tile [ngClass]="isOnDay(info.retreatInfo.dayTimeList, element.third) ? 'yellow' : ''"></mat-grid-tile>
+                                </td>
+                            </ng-container>
+                            
+                            <tr mat-header-row *matHeaderRowDef="['period', 'first', 'second', 'third']"></tr>
+                            <tr mat-row *matRowDef="let row; columns: ['period', 'first', 'second', 'third'];"></tr>
+                        </table>
                     </mat-list>
                 </mat-list>
             </mat-card-content>

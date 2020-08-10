@@ -19,10 +19,17 @@ export class RetreatInfoComponent implements OnInit {
   readonly info: Observable<Info>;
   loggedIn: boolean
   already = this._service.retreatRegistered;
+  readonly dayTimes = [
+    { period: '참석 여부', first: 'D1', second: 'D2', third: 'D3' },
+  ];
 
   constructor(private _service: RockService, private _router: Router) {
     this.info = _service.MyInfo.pipe(tap(info => { if(!environment.production) console.log(JSON.stringify(info)); }));
     this._service.loggedIn.subscribe((val) => this.loggedIn = val);
+  }
+
+  isOnDay(dayTimes: string[], day: string) {
+    return dayTimes.some(d => d.includes(day));
   }
 
   ngOnInit() {}
