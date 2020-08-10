@@ -175,8 +175,8 @@ export class RockService {
         return NEVER;
     }
 
-    private openErrorDialog(data: ErrorDialogData) {
-        return this._dialog.open(ErrorDialog, { data });
+    private static openErrorDialog(dialog: MatDialog, data: ErrorDialogData) {
+        return dialog.open(ErrorDialog, { data });
     }
 
     get Leaders() {

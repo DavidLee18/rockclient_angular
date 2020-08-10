@@ -70,21 +70,21 @@
                             <ng-container matColumnDef="first">
                                 <th mat-header-cell *matHeaderCellDef> 첫째날 </th>
                                 <td mat-cell *matCellDef="let element">
-                                    <mat-grid-tile [ngClass]="isOnDay(info.retreatInfo.dayTimeList, element.first) ? 'yellow' : ''"></mat-grid-tile>
+                                    <mat-icon>{{ isOnDay(info.retreatInfo.dayTimeList, element.first) ? 'done' : 'clear' }}</mat-icon>
                                 </td>
                             </ng-container>
                             
                             <ng-container matColumnDef="second">
                                 <th mat-header-cell *matHeaderCellDef> 둘째날 </th>
                                 <td mat-cell *matCellDef="let element">
-                                    <mat-grid-tile [ngClass]="isOnDay(info.retreatInfo.dayTimeList, element.second) ? 'yellow' : ''"></mat-grid-tile>
+                                    <mat-icon>{{ isOnDay(info.retreatInfo.dayTimeList, element.second) ? 'done' : 'clear' }}</mat-icon>
                                 </td>
                             </ng-container>
                             
                             <ng-container matColumnDef="third">
                                 <th mat-header-cell *matHeaderCellDef> 셋째날 </th>
                                 <td mat-cell *matCellDef="let element">
-                                    <mat-grid-tile [ngClass]="isOnDay(info.retreatInfo.dayTimeList, element.third) ? 'yellow' : ''"></mat-grid-tile>
+                                    <mat-icon>{{ isOnDay(info.retreatInfo.dayTimeList, element.third) ? 'done' : 'clear' }}</mat-icon>
                                 </td>
                             </ng-container>
                             

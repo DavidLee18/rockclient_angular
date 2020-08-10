@@ -1,2 +1,4 @@
 mat-card { max-width: 400px; }
 mat-grid-tile.yellow { background-color: yellow; }
+mat-grid-tile { background-color: teal; }
+td.yellow { background-color: yellow; }
