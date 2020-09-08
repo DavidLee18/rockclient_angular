@@ -5,6 +5,7 @@ import { catchError, retry, map, concatAll, pluck, tap, multicast } from 'rxjs/o
 import { AngularFireAuth } from '@angular/fire/auth';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
 
 enum Grade { member = "MEMBER", leader = "LEADER", admin = "ADMIN", mission = "MISSION" }
 
@@ -110,84 +111,87 @@ export class RockService {
     }
 
     login(id: string, password: string) {
-        return this._auth.signInWithEmailAndPassword(id, password).catch(this.handleError);
+        return this._auth.signInWithEmailAndPassword(id, password).catch(this.getHandleError(this._dialog, this._snackbar));
     }
 
-    sendEmail(email: string) { return this._auth.sendPasswordResetEmail(email).catch(this.handleError); }
+    sendEmail(email: string) { return this._auth.sendPasswordResetEmail(email).catch(this.getHandleError(this._dialog, this._snackbar)); }
 
     get loggedIn() { return this._auth.authState.pipe(map(user => user && !user.isAnonymous)); }
 
-    logout() { return this._auth.signOut().catch(this.handleError); }
+    logout() { return this._auth.signOut().catch(this.getHandleError(this._dialog, this._snackbar)); }
 
     editCampuses(id: number, campuses: string[]) {
         return this._http.put<Campuses>(`${this.root}/leaders/${id}/edit`, 
         {names: campuses}, { headers: this.headerBasic, observe: 'response' }
-        ).pipe(retry(3), catchError(this.handleError), pluck('ok'));
+        ).pipe(retry(3), catchError(this.getHandleError(this._dialog, this._snackbar)), pluck('ok'));
     }
 
     editRetreat(resume: RetreatResume) {
         return this._http.post<RetreatResume>(`${this.root}/retreat/edit`, resume, {
             headers: this.headerBasic, observe: 'response',
-        }).pipe(retry(3), catchError(this.handleError), pluck('ok'));
+        }).pipe(retry(3), catchError(this.getHandleError(this._dialog, this._snackbar)), pluck('ok'));
     }
 
-    private handleError<T>(error: any, caught?: Observable<T>) {
-        if(error instanceof HttpErrorResponse){
-            if (error.error instanceof ErrorEvent) {
-                // 클라이언트나 네트워크 문제로 발생한 에러.
-                console.error(`에러 발생: ${error.error.message}
-                error: ${JSON.stringify(error)}`);
-                window.alert(`에러 발생: ${error.error.message}
-                error: ${JSON.stringify(error)}`);
-            }
-            else if(error.headers.get('Content-Type') == 'application/json') {
-                if(error.error?.data) {
-                    //backend-sent error
-                    console.error(error.error.data);
-                    window.alert(error.error.data);
+    getHandleError(dialog: MatDialog, snackbar: MatSnackBar) {
+        return <T>(error: any, caught?: Observable<T>) => {
+            if(error instanceof HttpErrorResponse){
+                if (error.error instanceof ErrorEvent) {
+                    // 클라이언트나 네트워크 문제로 발생한 에러.
+                    console.error(`에러 발생: ${error.error.message}
+                    error: ${JSON.stringify(error)}`);
+                    window.alert(`에러 발생: ${error.error.message}
+                    error: ${JSON.stringify(error)}`);
+                }
+                else if(error.headers.get('Content-Type') == 'application/json') {
+                    if(error.error?.data) {
+                        //backend-sent error
+                        console.error(error.error.data);
+                        window.alert(error.error.data);
+                    }
+                }
+                else if(error.headers.get('Content-Type') == 'text/html') {
+                    //backend-sent, html-shaped error
+                    const body = (error.error as string).split('<body')[1].substring(1);
+                    console.error(body);
+                    window.alert(body);
                 }
             }
-            else if(error.headers.get('Content-Type') == 'text/html') {
-                //backend-sent, html-shaped error
-                const body = (error.error as string).split('<body')[1].substring(1);
-                console.error(body);
-                window.alert(body);
+            else if(typeof error == "string") {
+                //etc: string error
+                console.error(error);
+                window.alert(error);
             }
-        }
-        else if(typeof error == "string") {
-            //etc: string error
-            console.error(error);
-            window.alert(error);
-        }
-        else if(error?.code && error?.message) {
-            //firebase-sent error
-            console.error(`${error.code}\n${error.message}`);
-            window.alert(`${RockService.firebaseAuthErrorCode[error.code]}`);
-        }
-        else if(!RockService.nonNull(error)) {
-            //do nothing; keep silent
-        }
-        else {
-            //unknown error
-            console.error(`에러: ${JSON.stringify(error)}\n${typeof error}\n${error}`);
-            window.alert(`에러: ${error}`);
-        }
-        return NEVER;
+            else if(error?.code && error?.message) {
+                //firebase-sent error
+                console.error(`${error.code}\n${error.message}`);
+                window.alert(RockService.firebaseAuthErrorCode[error.code]);
+                this._dialog.open(ErrorDialog, { data: { errorMessage: RockService.firebaseAuthErrorCode[error.code]} });
+            }
+            else if(!RockService.nonNull(error)) {
+                //do nothing; keep silent
+            }
+            else {
+                //unknown error
+                console.error(`에러: ${JSON.stringify(error)}\n${typeof error}\n${error}`);
+                window.alert(`에러: ${error}`);
+            }
+            return caught;
+        };
     }
 
-    private static openErrorDialog(dialog: MatDialog, data: ErrorDialogData) {
+    private static openErrorDialog(dialog: MatDialog, data: {errorMessage: string}) {
         return dialog.open(ErrorDialog, { data });
     }
 
     get Leaders() {
         return this._http.get<Leaders>(`${this.root}/leaders`, { headers: this.headerBasic })
-        .pipe(retry(3), catchError(this.handleError));
+        .pipe(retry(3), catchError(this.getHandleError(this._dialog, this._snackbar)));
     }
 
     members(name: string) {
         return this._http.get<Member[]>(`${this.root}/members/search?name=${name}`, {
             headers: this.headerBasic
-        }).pipe(retry(3), catchError(this.handleError));
+        }).pipe(retry(3), catchError(this.getHandleError(this._dialog, this._snackbar)));
     }
 
 
@@ -199,25 +203,25 @@ export class RockService {
                     ...this.headerBasic
                 }
             });
-        }), concatAll(), retry(3), catchError(this.handleError));
+        }), concatAll(), retry(3), catchError(this.getHandleError(this._dialog, this._snackbar)));
     }
 
     registerMongsanpo(resume: MongsanpoResume) {
         return this._http.post<MongsanpoResume>(`${this.root}/mongsanpo/members`, resume, {
             headers: this.headerBasic, observe: 'response',
-        }).pipe(retry(3), catchError(this.handleError), pluck('ok'));
+        }).pipe(retry(3), catchError(this.getHandleError(this._dialog, this._snackbar)), pluck('ok'));
     }
 
     get MongsanpoMembers() {
         return this._http.get<MongsanpoMembers>(`${this.root}/mongsanpo/members`, {
             headers: this.headerBasic
-        }).pipe(retry(3), catchError(this.handleError));
+        }).pipe(retry(3), catchError(this.getHandleError(this._dialog, this._snackbar)));
     }
 
     registerRetreat(resume: RetreatResume) {
         return this._http.post<RetreatResume>(`${this.root}/retreat/register`, resume, {
         headers: this.headerBasic, observe: 'response',
-        }).pipe(pluck('ok'), retry(3), catchError(this.handleError));
+        }).pipe(pluck('ok'), retry(3), catchError(this.getHandleError(this._dialog, this._snackbar)));
     }
 
     get retreatRegistered() {
@@ -229,28 +233,24 @@ export class RockService {
             headers: new HttpHeaders(this.headerBasic)
             .set('Content-type', 'application/x-www-form-urlencoded'),
             observe: 'response',
-        }).pipe(retry(3), catchError(this.handleError), pluck('ok'));
+        }).pipe(retry(3), catchError(this.getHandleError(this._dialog, this._snackbar)), pluck('ok'));
     }
 
     signUp(resume: UserResume) {
         return this._http.post<UserResume>(`${this.root}/members/join`, resume, {
             headers: this.headerBasic, observe: 'response',
-        }).pipe(retry(3), catchError(this.handleError), pluck('ok'));
+        }).pipe(retry(3), catchError(this.getHandleError(this._dialog, this._snackbar)), pluck('ok'));
     }
 
     unsetLeader(id: number) {
         return this._http.delete(`${this.root}/leaders/${id}`, {
             headers: this.headerBasic, observe: 'response',
-        }).pipe(retry(3), catchError(this.handleError), pluck('ok'));
+        }).pipe(retry(3), catchError(this.getHandleError(this._dialog, this._snackbar)), pluck('ok'));
     }
 
     openDefault(snackbar: MatSnackBar, message: string, action?: string, config?: MatSnackBarConfig) {
         return snackbar.open(message, action, { duration: 3000, horizontalPosition: 'start', ...config });
     }
-}
-
-interface ErrorDialogData {
-    errorMessage: string
 }
 
 @Component({
@@ -265,5 +265,5 @@ interface ErrorDialogData {
     `
   })
   export class ErrorDialog {
-    constructor(@Inject(MAT_DIALOG_DATA) public data: ErrorDialogData) {}
+    constructor(@Inject(MAT_DIALOG_DATA) public data: {errorMessage: string}) {}
   }

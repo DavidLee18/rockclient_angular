@@ -42,6 +42,7 @@ import { MatChipsModule } from "@angular/material/chips";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
 import { ErrorDialog } from './rock.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { YouthModule } from "./youth/youth.module";
 
 registerLocaleData(ko.default, 'ko', koExtra.default);
 
@@ -61,6 +62,7 @@ registerLocaleData(ko.default, 'ko', koExtra.default);
   imports: [
     BrowserModule,
     RetreatModule,
+    YouthModule,
     AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthGuardModule,

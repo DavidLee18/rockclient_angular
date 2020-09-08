@@ -26,11 +26,13 @@ export class AuthGuard implements CanActivate, CanActivateChild, CanDeactivate<a
       if(!l) this._dialog.open(LogInDialog).afterClosed().subscribe(() => this._router.navigateByUrl('/login'));
     }));
   }
+
   canActivateChild(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     return this._service.loggedIn;
   }
+
   canDeactivate(
     component: any,
     currentRoute: ActivatedRouteSnapshot,
@@ -39,6 +41,7 @@ export class AuthGuard implements CanActivate, CanActivateChild, CanDeactivate<a
     if(nextState?.url == '/sign-up') { return true; }
     return this._service.loggedIn;
   }
+  
   canLoad(
     route: Route,
     segments: UrlSegment[]): Observable<boolean> | Promise<boolean> | boolean {
