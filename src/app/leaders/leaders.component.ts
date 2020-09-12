@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RockService } from '../rock.service';
 import { Router } from '@angular/router';
-import { routeNames } from '../app-routing.module';
+import { basicRouteNames } from '../app-routing.module';
 import { retreatRouteNames } from '../retreat/retreat-routing.module';
 import { map, concatAll, startWith, tap } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -23,7 +23,7 @@ export class LeadersComponent implements OnInit {
     "예배당", "새내기", "중등부",
   ];
   loggedIn = this._service.loggedIn;
-  readonly routes = routeNames.concat(retreatRouteNames);
+  readonly routes = basicRouteNames.concat(retreatRouteNames);
   leaders = this._service.Leaders.pipe(map(l => l.data));
   selectedCampus = '';
 

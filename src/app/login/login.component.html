@@ -41,10 +41,13 @@
             </mat-form-field>
         </div>
         <div>
-            <button mat-stroked-button routerLink="/sign-up">회원가입</button>
             <button mat-raised-button type="submit" (click)="toSubmit = true" [disabled]="form?.invalid" cdkFocusInitial>로그인</button>
-            <button mat-stroked-button (click)="openSheet()">비밀번호를 잊으셨나요?</button>
         </div>
         </form>
+        <div>
+            <button mat-stroked-button routerLink="/sign-up">회원가입</button>
+            <button mat-stroked-button (click)="openSheet()">비밀번호를 잊으셨나요?</button>
+            <button mat-stroked-button routerLink="/semi-sign-up">준회원 등록</button> <!--안먹힘...-->
+        </div>
     </mat-sidenav-content>
 </mat-sidenav-container>

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RockService } from 'src/app/rock.service';
-import { routeNames } from 'src/app/app-routing.module';
+import { basicRouteNames } from 'src/app/app-routing.module';
 import { retreatRouteNames } from '../retreat-routing.module';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { NestedTreeControl } from '@angular/cdk/tree';
@@ -42,7 +42,7 @@ const mockData: Node[] = [
 })
 export class RetreatStatisticsComponent implements OnInit {
   loggedIn: boolean
-  readonly routes = routeNames.concat(retreatRouteNames);
+  readonly routes = basicRouteNames.concat(retreatRouteNames);
   control = () => new NestedTreeControl<Node>(node => node.children);
   readonly stats: Stat[] = [
     { 

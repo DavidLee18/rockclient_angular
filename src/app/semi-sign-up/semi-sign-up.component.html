@@ -1,0 +1,90 @@
+<mat-toolbar>
+    <button mat-icon-button (click)="nav.open()">
+        <mat-icon>menu</mat-icon>
+    </button>
+    <span>준회원 등록</span>
+    <span class="spacer"></span>
+    <button mat-icon-button [matMenuTriggerFor]="account"><mat-icon [class.grey]="!loggedIn">account_circle</mat-icon></button>
+    <mat-menu #account="matMenu">
+        <ng-template matMenuContent>
+            <button mat-menu-item disabled>{{loggedIn ? "로그인 됨" : "로그인 안 됨"}}</button>
+            <button mat-menu-item (click)="logout()">{{loggedIn ? "로그아웃하기" : "로그인하기"}}</button>
+        </ng-template>
+    </mat-menu>
+</mat-toolbar>
+<mat-sidenav-container>
+    <mat-sidenav #nav>
+        <mat-nav-list>
+            <mat-list-item *ngFor="let route of routes" [routerLink]="route.path" (click)="nav.close()">
+                <mat-icon *ngIf="route.icon != undefined">{{route.icon}}</mat-icon>
+                <a mat-list-item>{{route.label}}</a>
+            </mat-list-item>
+        </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <mat-vertical-stepper linear #stepper>
+            <mat-step [stepControl]="nameForm">
+              <form [formGroup]="nameForm">
+                <ng-template matStepLabel>환영합니다! 이름이 뭔가요?</ng-template>
+                <mat-form-field appearance="fill">
+                    <mat-label>이름</mat-label>
+                    <input matInput type="text" formControlName="name" required>
+                    <mat-error *ngIf="nameForm.get('name').errors?.required">이름을 입력하세요</mat-error>
+                </mat-form-field>
+                <div>
+                  <button mat-button matStepperNext>다음으로</button>
+                </div>
+              </form>
+            </mat-step>
+            <mat-step [stepControl]="mobileForm">
+              <form [formGroup]="mobileForm">
+                <ng-template matStepLabel>전화번호를 적어주세요</ng-template>
+                <mat-form-field appearance="fill">
+                    <mat-label>연락처</mat-label>
+                    <input matInput type="tel" formControlName="mobile" required>
+                    <mat-error *ngIf="mobileForm.get('mobile').errors?.required">연락처를 입력하세요</mat-error>
+                    <mat-error *ngIf="mobileForm.get('mobile').errors?.pattern">올바른 연락처를 입력하세요</mat-error>
+                    <mat-hint>ex) 01012345678</mat-hint>
+                </mat-form-field>
+                <div>
+                  <button mat-button matStepperPrevious>이전으로</button>
+                  <button mat-button matStepperNext>다음으로</button>
+                </div>
+              </form>
+            </mat-step>
+            <mat-step [stepControl]="campusForm">
+                <form [formGroup]="campusForm">
+                  <ng-template matStepLabel>소속 캠퍼스를 선택해주새요</ng-template>
+                  <mat-form-field appearance="fill">
+                    <mat-label>캠퍼스</mat-label>
+                    <mat-select formControlName="campus" required>
+                        <mat-option *ngFor="let campus of campuses" [value]="campus">{{campus}}</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="campusForm.get('campus').errors?.required">캠퍼스를 선택하세요</mat-error>
+                </mat-form-field>
+                  <div>
+                    <button mat-button matStepperPrevious>이전으로</button>
+                    <button mat-button matStepperNext (click)="signUp()">다음으로</button>
+                  </div>
+                </form>
+              </mat-step>
+            <mat-step>
+              <ng-template matStepLabel>등록 완료</ng-template>
+              <section *ngIf="signedUp; else loading">
+                <h2>축하합니다!</h2>
+                <div>준회원 등록을 마쳤습니다!</div>
+              </section>
+              <ng-template #loading>
+                  <section>
+                      <mat-spinner diameter="30" stroke-width="5"></mat-spinner>
+                      등록을 거의 마쳤습니다. <br> 조금만 기다리세요...
+                  </section>
+              </ng-template>
+              <div>
+                <button mat-button matStepperPrevious>이전으로</button>
+                <button mat-button (click)="stepper.reset()">재설정하기</button>
+              </div>
+            </mat-step>
+          </mat-vertical-stepper>
+    </mat-sidenav-content>
+</mat-sidenav-container>

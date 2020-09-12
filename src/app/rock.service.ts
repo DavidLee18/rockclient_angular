@@ -7,7 +7,7 @@ import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 
-enum Grade { member = "MEMBER", leader = "LEADER", admin = "ADMIN", mission = "MISSION" }
+export enum Grade { member = "MEMBER", leader = "LEADER", admin = "ADMIN", mission = "MISSION" }
 
 type Campuses = { names: string[] }
 
@@ -86,6 +86,13 @@ interface UserResume {
     guide?: string
 }
 
+interface SemiUserResume {
+    name: string
+    mobile: string
+    campus: string
+}
+
+//TODO: multicast observables
 @Injectable({ providedIn: "root" })
 export class RockService {
     private readonly root = 'http://cba.sungrak.or.kr:9000';
@@ -238,6 +245,12 @@ export class RockService {
 
     signUp(resume: UserResume) {
         return this._http.post<UserResume>(`${this.root}/members/join`, resume, {
+            headers: this.headerBasic, observe: 'response',
+        }).pipe(retry(3), catchError(this.getHandleError(this._dialog, this._snackbar)), pluck('ok'));
+    }
+
+    semiSignUp(resume: SemiUserResume) {
+        return this._http.post<SemiUserResume>(`${this.root}/members/semi-join`, resume, {
             headers: this.headerBasic, observe: 'response',
         }).pipe(retry(3), catchError(this.getHandleError(this._dialog, this._snackbar)), pluck('ok'));
     }

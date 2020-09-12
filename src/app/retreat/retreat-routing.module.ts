@@ -20,6 +20,9 @@ const retreatRoutes: Routes = [{
 
 export const retreatRouteNames = [
   { path: '/retreat', label: '수련회 정보', icon: 'info' },
+];
+
+export const retreatLeadersRouteNames = [
   { path: '/retreat/statistics', label: '수련회 통계', icon: 'analytics' },
 ];
 

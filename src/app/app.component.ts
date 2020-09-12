@@ -8,7 +8,7 @@ import { LoginComponent } from './login/login.component';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
   animations: [
-    slideInAnimation,
+    //slideInAnimation,
   ]
 })
 export class AppComponent {

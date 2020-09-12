@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RockService } from '../../rock.service';
-import { routeNames } from '../../app-routing.module';
+import { youthRouteNames } from '../youth-routing.module';
 import { FormControl, Validators, ValidatorFn, AbstractControl, FormBuilder } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
@@ -24,7 +24,7 @@ export class SignUpComponent implements OnInit {
     guide: [''],
   }, { validators: [this.passAgain] });
 
-  readonly routes = routeNames;
+  readonly routes = youthRouteNames;
   passVisible = false; passAgainVisible = false;
   signUpInProgress = false;
   toSubmit = false;

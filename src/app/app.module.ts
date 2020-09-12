@@ -43,6 +43,9 @@ import { MatAutocompleteModule } from "@angular/material/autocomplete";
 import { ErrorDialog } from './rock.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { YouthModule } from "./youth/youth.module";
+import { SemiSignUpComponent } from './semi-sign-up/semi-sign-up.component';
+import { MatStepperModule } from '@angular/material/stepper';
+import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 
 registerLocaleData(ko.default, 'ko', koExtra.default);
 
@@ -58,6 +61,7 @@ registerLocaleData(ko.default, 'ko', koExtra.default);
     LogInDialog,
     MemberSearchBottomSheet,
     ErrorDialog,
+    SemiSignUpComponent,
   ],
   imports: [
     BrowserModule,
@@ -91,6 +95,7 @@ registerLocaleData(ko.default, 'ko', koExtra.default);
     MatChipsModule,
     MatAutocompleteModule,
     MatProgressSpinnerModule,
+    MatStepperModule,
   ],
   entryComponents: [
     LoginBottomSheet,
@@ -102,6 +107,7 @@ registerLocaleData(ko.default, 'ko', koExtra.default);
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'ko-KR' },
     { provide: LOCALE_ID, useValue: 'ko' },
+    { provide: STEPPER_GLOBAL_OPTIONS, useValue: { showError: true } },
   ],
   bootstrap: [AppComponent]
 })
