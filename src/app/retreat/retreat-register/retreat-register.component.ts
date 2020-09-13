@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RockService, RetreatResume, Grade } from 'src/app/rock.service';
 import { Router } from '@angular/router';
-import { basicRouteNames, leadersRouteNames } from 'src/app/app-routing.module';
-import { retreatRouteNames } from '../retreat-routing.module';
 import { FormBuilder, Validators, ValidatorFn, AbstractControl, FormGroup } from '@angular/forms';
 import { map, concatAll, pluck } from 'rxjs/operators';
 import { zip, of } from 'rxjs';
@@ -15,12 +13,8 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./retreat-register.component.css']
 })
 export class RetreatRegisterComponent implements OnInit {
-  public get routes() {
-    return this.isLeader ? basicRouteNames.concat(retreatRouteNames) : basicRouteNames.concat(retreatRouteNames, leadersRouteNames);
-  }
-  
+  readonly routes = this._service.routeNames;
   loggedIn = this._service.loggedIn;
-  isLeader = false;
   private _uid = this._service.MyInfo.pipe(pluck('uid'));
   myInfo = this._service.MyInfo;
   form = this._builder.group({
@@ -66,9 +60,7 @@ export class RetreatRegisterComponent implements OnInit {
     'D4': ['D4_T1', 'D4_T2', 'D4_T3', 'D4_T4'],
   };
 
-  constructor(private _service: RockService, private _router: Router, private _snackbar: MatSnackBar, private _builder: FormBuilder) {
-    this.myInfo.pipe(map(info => info.grade != Grade.member)).subscribe(isLeader => this.isLeader = isLeader);
-  }
+  constructor(private _service: RockService, private _router: Router, private _snackbar: MatSnackBar, private _builder: FormBuilder) {}
   
   ngOnInit() {
     this.myInfo.subscribe((info) => {

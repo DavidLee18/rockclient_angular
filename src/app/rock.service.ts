@@ -1,6 +1,6 @@
 import { Injectable, Component, Inject } from "@angular/core";
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { Observable, throwError, of, NEVER, Subject } from 'rxjs';
+import { Observable, throwError, of, NEVER, Subject, zip } from 'rxjs';
 import { catchError, retry, map, concatAll, pluck, tap, multicast } from 'rxjs/operators';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
@@ -92,6 +92,14 @@ interface SemiUserResume {
     campus: string
 }
 
+const routeNames = [
+    { path: '/login', label: '로그인', icon: 'account_circle', predicate: { loggedIn : false }, },
+    { path: '/leaders', label: '리더 관리', icon: 'people', predicate: { loggedIn : true, grade: Grade.leader }, },
+    { path: '/semi-sign-up', label: '새친구 등록', icon: 'person_add', predicate: { loggedIn : true, grade: Grade.admin }, },
+    { path: '/retreat', label: '수련회 정보', icon: 'info', predicate: { loggedIn : true }, },
+    { path: '/retreat/statistics', label: '수련회 통계', icon: 'analytics', predicate: { loggedIn : true, grade: Grade.leader }, },
+];
+
 //TODO: multicast observables
 @Injectable({ providedIn: "root" })
 export class RockService {
@@ -110,7 +118,7 @@ export class RockService {
     static tuple = <T extends any[]>(...args: T): T => args;
     
     constructor(private _http: HttpClient, private _auth: AngularFireAuth, private _dialog: MatDialog, private _snackbar: MatSnackBar) {
-        this.uid = _auth.authState.pipe(pluck('uid'));
+        this.uid = _auth.authState.pipe(map(user => user?.uid));
     }
 
     static nonNull(object: any) {
@@ -123,7 +131,7 @@ export class RockService {
 
     sendEmail(email: string) { return this._auth.sendPasswordResetEmail(email).catch(this.getHandleError(this._dialog, this._snackbar)); }
 
-    get loggedIn() { return this._auth.authState.pipe(map(user => user && !user.isAnonymous)); }
+    get loggedIn() { return this._auth.authState.pipe(map(user => (user && !user.isAnonymous) ?? false)); }
 
     logout() { return this._auth.signOut().catch(this.getHandleError(this._dialog, this._snackbar)); }
 
@@ -204,13 +212,25 @@ export class RockService {
 
     get MyInfo() {
         return this.uid.pipe(map((uid) => {
-            return this._http.get<Info>(`${this.root}/members/info?uid=${uid}`, {
+            return uid == null || uid == undefined ? of(undefined) : this._http.get<Info>(`${this.root}/members/info?uid=${uid}`, {
                 headers: {
                     'Accept': 'application/json',
                     ...this.headerBasic
                 }
             });
         }), concatAll(), retry(3), catchError(this.getHandleError(this._dialog, this._snackbar)));
+    }
+
+    static isGradeEqualOrGreaterThan(grade: Grade, condition: Grade) : boolean {
+        const values = Object.values(Grade);
+        return values.indexOf(grade) >= values.indexOf(condition) ?? false;
+    }
+
+    get routeNames() {
+        return zip(this.loggedIn, this.MyInfo).pipe(map(([l, info]) => {
+            const grade = info?.grade;
+            return routeNames.filter(names => names.predicate.loggedIn == l && (grade != null ? RockService.isGradeEqualOrGreaterThan(grade, names.predicate?.grade) : !Object.keys(names.predicate).includes('grade')));
+        }));
     }
 
     registerMongsanpo(resume: MongsanpoResume) {

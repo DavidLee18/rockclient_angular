@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { environment } from 'src/environments/environment';
-import { basicRouteNames } from '../app-routing.module';
 import { RockService } from '../rock.service';
 
 @Component({
@@ -33,7 +32,7 @@ export class SemiSignUpComponent {
     '새내기', '예배당', '중등부',
   ];
 
-  readonly routes = basicRouteNames;
+  readonly routes = this._service.routeNames;
 
   constructor(private _service: RockService) {}
 
@@ -41,11 +40,12 @@ export class SemiSignUpComponent {
 
   signUp() {
     if(this.nameForm.invalid || this.mobileForm.invalid || this.campusForm.invalid) return;
-    if(!environment.production) return;
-    this._service.semiSignUp({
+    const resume = {
       name: this.nameForm.get('name').value,
       mobile: this.mobileForm.get('mobile').value,
       campus: this.campusForm.get('campus').value,
-    }).subscribe(done => { this.signedUp = done; });
+    };
+    if(!environment.production) { console.log(JSON.stringify(resume)); return; }
+    this._service.semiSignUp(resume).subscribe(done => { this.signedUp = done; });
   }
 }

@@ -2,7 +2,7 @@
     <button mat-icon-button (click)="nav.open()">
         <mat-icon>menu</mat-icon>
     </button>
-    <span>준회원 등록</span>
+    <span>새친구 등록</span>
     <span class="spacer"></span>
     <button mat-icon-button [matMenuTriggerFor]="account"><mat-icon [class.grey]="!loggedIn">account_circle</mat-icon></button>
     <mat-menu #account="matMenu">
@@ -15,7 +15,7 @@
 <mat-sidenav-container>
     <mat-sidenav #nav>
         <mat-nav-list>
-            <mat-list-item *ngFor="let route of routes" [routerLink]="route.path" (click)="nav.close()">
+            <mat-list-item *ngFor="let route of routes | async" [routerLink]="route.path" (click)="nav.close()">
                 <mat-icon *ngIf="route.icon != undefined">{{route.icon}}</mat-icon>
                 <a mat-list-item>{{route.label}}</a>
             </mat-list-item>

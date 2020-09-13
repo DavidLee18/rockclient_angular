@@ -3,7 +3,6 @@ import { MatBottomSheet, MatBottomSheetRef } from '@angular/material/bottom-shee
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RockService } from '../rock.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { basicRouteNames } from '../app-routing.module';
 import { Router } from '@angular/router';
 
 @Component({
@@ -21,7 +20,7 @@ export class LoginComponent {
   passVisible = false;
   toSubmit = false;
 
-  readonly routes = basicRouteNames;
+  readonly routes = this._service.routeNames;
 
   constructor(private _bSheet: MatBottomSheet, private _service: RockService, private _router: Router) {
     this._service.loggedIn.subscribe((loggedIn) => { this.loggedIn = loggedIn; if(loggedIn) { this._router.navigateByUrl('/retreat'); } });

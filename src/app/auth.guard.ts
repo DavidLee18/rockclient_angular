@@ -22,8 +22,9 @@ export class AuthGuard implements CanActivate, CanActivateChild, CanDeactivate<a
       }
       return (next.data.names as string[]).includes(info.name);
     }));
-    return this._service.loggedIn.pipe(tap(l => {
-      if(!l) this._dialog.open(LogInDialog).afterClosed().subscribe(() => this._router.navigateByUrl('/login'));
+    else if(next.data && next.data.grade) return this._service.MyInfo.pipe(map(info => RockService.isGradeEqualOrGreaterThan(info?.grade, next.data.grade)));
+    else return this._service.loggedIn.pipe(tap(l => {
+      if(l == false) this._dialog.open(LogInDialog).afterClosed().subscribe(() => this._router.navigateByUrl('/login'));
     }));
   }
 
