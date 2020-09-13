@@ -95,7 +95,7 @@ interface SemiUserResume {
 const routeNames = [
     { path: '/login', label: '로그인', icon: 'account_circle', predicate: { loggedIn : false }, },
     { path: '/leaders', label: '리더 관리', icon: 'people', predicate: { loggedIn : true, grade: Grade.leader }, },
-    { path: '/semi-sign-up', label: '새친구 등록', icon: 'person_add', predicate: { loggedIn : true, grade: Grade.admin }, },
+    { path: '/semi-sign-up', label: '새친구 등록', icon: 'person_add', predicate: { loggedIn : true, grade: Grade.assistant }, },
     { path: '/retreat', label: '수련회 정보', icon: 'info', predicate: { loggedIn : true }, },
     { path: '/retreat/statistics', label: '수련회 통계', icon: 'analytics', predicate: { loggedIn : true, grade: Grade.leader }, },
 ];
