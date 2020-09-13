@@ -7,7 +7,7 @@ import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 
-export enum Grade { member = "MEMBER", leader = "LEADER", admin = "ADMIN", mission = "MISSION" }
+export enum Grade { member = "MEMBER", leader = "LEADER", mission = "MISSION", assistant = "GANSA", admin = "ADMIN" }
 
 type Campuses = { names: string[] }
 
