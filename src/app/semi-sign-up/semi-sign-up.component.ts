@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { RockService } from '../rock.service';
 
@@ -23,6 +24,7 @@ export class SemiSignUpComponent {
 
   loggedIn = false;
   signedUp = false;
+  uid = '';
 
   readonly campuses = [
     '강변', '강북', '강원', 
@@ -34,7 +36,9 @@ export class SemiSignUpComponent {
 
   readonly routes = this._service.routeNames;
 
-  constructor(private _service: RockService) {}
+  constructor(private _service: RockService) {
+    _service.MyInfo.pipe(map(info => info?.uid)).subscribe(_uid => this.uid = _uid);
+  }
 
   logout() { this._service.logout(); }
 
@@ -44,6 +48,7 @@ export class SemiSignUpComponent {
       name: this.nameForm.get('name').value,
       mobile: this.mobileForm.get('mobile').value,
       campus: this.campusForm.get('campus').value,
+      adminUid: this.uid,
     };
     if(!environment.production) { console.log(JSON.stringify(resume)); return; }
     this._service.semiSignUp(resume).subscribe(done => { this.signedUp = done; });

@@ -8,7 +8,7 @@
 <mat-sidenav-container>
     <mat-sidenav #nav>
         <mat-nav-list>
-            <mat-list-item *ngFor="let route of routes" [routerLink]="route.path" (click)="nav.close()">
+            <mat-list-item *ngFor="let route of routes | async" [routerLink]="route.path" (click)="nav.close()">
                 <mat-icon *ngIf="route.icon != undefined">{{route.icon}}</mat-icon>
                 <a mat-list-item>{{route.label}}</a>
             </mat-list-item>
@@ -68,7 +68,7 @@
             <mat-form-field appearance="fill">
                 <mat-label>목장</mat-label>
                 <mat-select formControlName="pasture" required>
-                    <mat-option *ngFor="let pasture of pastures" [value]="pasture">{{pasture}}</mat-option>
+                    <mat-option *ngFor="let pasture of pastures" [value]="pasture + '목장'">{{pasture}}목장</mat-option>
                 </mat-select>
                 <mat-error *ngIf="form.get('pasture').errors?.required">목장을 선택하세요</mat-error>
             </mat-form-field>
@@ -88,14 +88,9 @@
                 <input matInput type="text" formControlName="address" required>
                 <mat-error *ngIf="form.get('address').errors?.required">주소를 입력하세요</mat-error>
             </mat-form-field>
-            <mat-form-field appearance="fill">
-                <mat-label>인도자(새신자 전용)</mat-label>
-                <input matInput type="text" formControlName="guide">
-                <mat-hint>새신자이실 경우 인도자를 입력해주세요</mat-hint>
-            </mat-form-field>
         </div>
         <div>
-            <button mat-stroked-button routerLink="/youth/login">이전으로</button>
+            <button mat-stroked-button routerLink="/login">이전으로</button>
             <button mat-raised-button type="submit" (click)="toSubmit = true" [disabled]="form?.invalid || signUpInProgress">가입하기</button>
             <mat-spinner diameter="30" stroke-width="5" *ngIf="signUpInProgress"></mat-spinner>
         </div>

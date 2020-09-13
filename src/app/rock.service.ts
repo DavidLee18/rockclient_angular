@@ -90,6 +90,18 @@ interface SemiUserResume {
     name: string
     mobile: string
     campus: string
+    adminUid: string
+}
+
+interface YouthUserResume {
+    email: string
+    password: string
+    name: string
+    mobile: string
+    birthDate: string
+    address: string
+    sex: string
+    team: string
 }
 
 const routeNames = [
@@ -210,7 +222,7 @@ export class RockService {
     }
 
 
-    get MyInfo() {
+    get MyInfo() : Observable<Info> {
         return this.uid.pipe(map((uid) => {
             return uid == null || uid == undefined ? of(undefined) : this._http.get<Info>(`${this.root}/members/info?uid=${uid}`, {
                 headers: {
@@ -271,6 +283,12 @@ export class RockService {
 
     semiSignUp(resume: SemiUserResume) {
         return this._http.post<SemiUserResume>(`${this.root}/members/semi-join`, resume, {
+            headers: this.headerBasic, observe: 'response',
+        }).pipe(retry(3), catchError(this.getHandleError(this._dialog, this._snackbar)), pluck('ok'));
+    }
+
+    youthSignUp(resume: YouthUserResume) {
+        return this._http.post<YouthUserResume>(`${this.root}/members/bwm/join`, resume, {
             headers: this.headerBasic, observe: 'response',
         }).pipe(retry(3), catchError(this.getHandleError(this._dialog, this._snackbar)), pluck('ok'));
     }

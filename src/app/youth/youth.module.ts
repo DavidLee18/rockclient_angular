@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 
 import { YouthRoutingModule } from './youth-routing.module';
 import { SignUpComponent } from './sign-up/sign-up.component';
-import { LoginComponent, LoginBottomSheet } from './login/login.component';
 import { YouthComponent } from './youth/youth.component';
 import { DiscardChangeDialog } from "../discard-change.guard";
 import { MatInputModule } from '@angular/material/input';
@@ -22,7 +21,7 @@ import { MatMenuModule } from '@angular/material/menu';
 
 
 @NgModule({
-  declarations: [SignUpComponent, LoginComponent, YouthComponent, LoginBottomSheet],
+  declarations: [SignUpComponent, YouthComponent],
   imports: [
     CommonModule,
     YouthRoutingModule,
@@ -39,6 +38,6 @@ import { MatMenuModule } from '@angular/material/menu';
     MatToolbarModule,
     ReactiveFormsModule,
   ],
-  entryComponents: [DiscardChangeDialog, LoginBottomSheet],
+  entryComponents: [DiscardChangeDialog],
 })
 export class YouthModule { }

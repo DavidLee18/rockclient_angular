@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { RockService } from '../../rock.service';
-import { youthRouteNames } from '../youth-routing.module';
 import { FormControl, Validators, ValidatorFn, AbstractControl, FormBuilder } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
@@ -21,21 +20,14 @@ export class SignUpComponent implements OnInit {
     sex: ['', Validators.required],
     pasture: ['', Validators.required],
     address: ['', Validators.required],
-    guide: [''],
   }, { validators: [this.passAgain] });
 
-  readonly routes = youthRouteNames;
+  readonly routes = this._service.routeNames;
   passVisible = false; passAgainVisible = false;
   signUpInProgress = false;
   toSubmit = false;
 
-  readonly pastures = [
-    '강변', '강북', '강원', 
-    '남서울', '대학로', '서바다', 
-    '신촌', '인성경', '인천', 
-    '천안', '필레오', '해외캠퍼스', 
-    '새내기', '예배당', '중등부',
-  ];
+  readonly pastures = [1, 2, 3, 4, 5, 6, 7, 8];
 
   constructor(
     private _service: RockService,
@@ -58,22 +50,21 @@ export class SignUpComponent implements OnInit {
   signUp() {
     if(this.toSubmit) {
       this.signUpInProgress = true;
-      /*this._service.signUp({
+      this._service.youthSignUp({
         email: this.form.get('email').value,
         password: this.form.get('pass').value,
         name: this.form.get('name').value,
         mobile: this.form.get('mobile').value,
         birthDate: this.form.get('birthDate').value,
         sex: this.form.get('sex').value,
-        campus: this.form.get('campus').value,
         address: this.form.get('address').value,
-        guide: this.form.get('guide').value,
+        team: this.form.get('pasture').value,
       }).subscribe(signedUp => {
         if (signedUp) {
           let ref = this._service.openDefault(this._snackBar, '회원가입에 성공했습니다.', '로그인하기');
-          ref.onAction().subscribe(() => { this._router.navigateByUrl('/youth/login'); });
+          ref.onAction().subscribe(() => { this._router.navigateByUrl('/login'); });
         } else this._service.openDefault(this._snackBar, '회원가입에 실패했습니다.');
-      }); */
+      });
       this.signUpInProgress = false;
     }
   }
