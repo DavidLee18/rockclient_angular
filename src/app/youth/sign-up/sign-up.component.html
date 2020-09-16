@@ -4,7 +4,7 @@
     </button>
     <span>청년부 회원가입</span>
     <span class="spacer"></span>
-    <button mat-button routerLink="/sign-up">대학부이신가요?</button>
+    <button mat-button [routerLink]="['/sign-up', { from: 'youth' }]">대학부이신가요?</button>
 </mat-toolbar>
 <mat-sidenav-container>
     <mat-sidenav #nav>

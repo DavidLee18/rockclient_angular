@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { RockService } from '../rock.service';
 import { FormControl, Validators, ValidatorFn, AbstractControl, FormBuilder } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-sign-up',
@@ -47,7 +47,8 @@ export class SignUpComponent implements OnInit {
     private _service: RockService,
     private _builder: FormBuilder,
     private _snackBar: MatSnackBar,
-    private _router: Router
+    private _router: Router,
+    private _route: ActivatedRoute,
   ) {}
   
   get passAgain(): ValidatorFn {
@@ -59,7 +60,10 @@ export class SignUpComponent implements OnInit {
     };
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    const from = this._route.snapshot.paramMap.get('from');
+    if(from != 'youth') this._router.navigateByUrl('/youth/sign-up');
+  }
 
   signUp() {
     if(this.toSubmit) {

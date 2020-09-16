@@ -18,7 +18,8 @@ export class DiscardChangeGuard implements CanDeactivate<unknown> {
     currentState: RouterStateSnapshot,
     nextState?: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     if(nextState?.url == '/login') return this._service.loggedIn.pipe(map(l => !l));
-    return this._dialog.open(DiscardChangeDialog).afterClosed() as Observable<boolean>;
+    else if(currentState.url == '/sign-up' && nextState?.url == '/youth/sign-up') return true;
+    else return this._dialog.open(DiscardChangeDialog).afterClosed() as Observable<boolean>;
   }
   
 }
