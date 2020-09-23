@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { RockService } from '../rock.service';
+import { Member, RockService } from '../rock.service';
 import { Router } from '@angular/router';
 import { map, concatAll, startWith, tap } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -76,17 +76,17 @@ export class LeadersComponent implements OnInit {
       <mat-label>리더로 추가할 멤버 검색</mat-label>
       <input type="text" matInput [formControl]="form">
     </mat-form-field>
-    <mat-card *ngFor="let searched of searchedOnes | async">
+    <mat-card *ngFor="let searched of searched$ | async">
       <mat-card-header>
-        <mat-card-title>{{searched?.name}}</mat-card-title>
-        <mat-card-subtitle>{{searched?.mobile}}</mat-card-subtitle>
+        <mat-card-title>{{searched.name}}</mat-card-title>
+        <mat-card-subtitle>{{searched.mobile}}</mat-card-subtitle>
       </mat-card-header>
       <mat-card-content>
         <mat-list>
-          <mat-list-item>멤버 ID: {{searched?.id}}</mat-list-item>
-          <mat-list-item>생년월일: {{searched?.dt_birth | date:'longDate'}}</mat-list-item>
-          <mat-list-item>캠퍼스: {{searched?.campus}}</mat-list-item>
-          <mat-list-item>{{searched?.active ? '활성화됨' : '비활성화됨'}}</mat-list-item>
+          <mat-list-item>멤버 ID: {{searched.id}}</mat-list-item>
+          <mat-list-item>생년월일: {{searched.dt_birth | date:'longDate'}}</mat-list-item>
+          <mat-list-item>캠퍼스: {{searched.campus}}</mat-list-item>
+          <mat-list-item>{{searched.active ? '활성화됨' : '비활성화됨'}}</mat-list-item>
         </mat-list>
       </mat-card-content>
       <mat-card-actions>
@@ -97,11 +97,16 @@ export class LeadersComponent implements OnInit {
 })
 export class MemberSearchBottomSheet {
   form = new FormControl('');
+  searched$: Observable<Member[]>;
 
-  constructor(private _service: RockService, private _snackbar: MatSnackBar, private _router: Router, private _bSheetRef: MatBottomSheetRef) {}
-
-  get searchedOnes() {
-    return this.form.valueChanges.pipe(map(this._service.members), concatAll(), tap(x => console.log(JSON.stringify(x))));
+  constructor(private _service: RockService, private _snackbar: MatSnackBar, private _router: Router, private _bSheetRef: MatBottomSheetRef) {
+    this.searched$ = this.form.valueChanges.pipe(map((value: string) => {
+      if (value) {
+        return _service.members(value);
+      } else {
+        return of([]);
+      }
+    }), concatAll());
   }
 
   setLeader(memId: number) {

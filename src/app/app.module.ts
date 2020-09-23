@@ -65,12 +65,12 @@ registerLocaleData(ko.default, 'ko', koExtra.default);
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
     RetreatModule,
     YouthModule,
     AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthGuardModule,
-    HttpClientModule,
     BrowserAnimationsModule,
     MatInputModule,
     MatFormFieldModule,
