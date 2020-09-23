@@ -43,7 +43,7 @@
                       </mat-chip>
                     </mat-chip-list>
                     <mat-select (selectionChange)="addCampus(leader.id, $event.value, leader.campuses)">
-                        <mat-option *ngFor="let campus of campuses" [value]="campus">
+                        <mat-option *ngFor="let campus of campuses.concat(pastures)" [value]="campus">
                           {{campus}}
                         </mat-option>
                     </mat-select>

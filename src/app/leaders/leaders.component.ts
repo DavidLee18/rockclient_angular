@@ -20,6 +20,7 @@ export class LeadersComponent implements OnInit {
     "천안", "필레오", "해외캠퍼스",
     "예배당", "새내기", "중등부",
   ];
+  readonly pastures = Array.from({length: 8}, (_, i) => `${i + 1}목장`);
   loggedIn = this._service.loggedIn;
   readonly routes = this._service.routeNames;
   leaders = this._service.Leaders.pipe(map(l => l.data));
@@ -47,7 +48,7 @@ export class LeadersComponent implements OnInit {
   }
 
   addCampus(id: number, toAdd: string, origin: string[]) {
-    if(this.campuses.includes(toAdd)) {
+    if(this.campuses.includes(toAdd) || this.pastures.includes(toAdd)) {
       const added = [...origin, toAdd];
       this._service.editCampuses(id, added).subscribe(pushed => {
         if(pushed) {
