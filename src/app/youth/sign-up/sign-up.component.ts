@@ -3,6 +3,7 @@ import { RockService } from '../../rock.service';
 import { FormControl, Validators, ValidatorFn, AbstractControl, FormBuilder } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-sign-up',
@@ -50,16 +51,18 @@ export class SignUpComponent implements OnInit {
   signUp() {
     if(this.toSubmit) {
       this.signUpInProgress = true;
-      this._service.youthSignUp({
+      const resume = {
         email: this.form.get('email').value,
         password: this.form.get('pass').value,
         name: this.form.get('name').value,
         mobile: this.form.get('mobile').value,
-        birthDate: this.form.get('birthDate').value,
+        birthDate: RockService.normalizeDateToString(new Date(this.form.get('birthDate').value)),
         sex: this.form.get('sex').value,
         address: this.form.get('address').value,
         team: this.form.get('pasture').value,
-      }).subscribe(signedUp => {
+      };
+      if(!environment.production) { console.log(JSON.stringify(resume)); }
+      else this._service.youthSignUp(resume).subscribe(signedUp => {
         if (signedUp) {
           let ref = this._service.openDefault(this._snackBar, '회원가입에 성공했습니다.', '로그인하기');
           ref.onAction().subscribe(() => { this._router.navigateByUrl('/login'); });

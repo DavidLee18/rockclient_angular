@@ -137,6 +137,12 @@ export class RockService {
         return object != null && object != undefined && Object.values(object)?.every(v => v != null && v != undefined);
     }
 
+    static normalizeDateToString(date: Date) {
+        const day = date.getDate().toString();
+        const month = (date.getMonth() + 1).toString();
+        return `${date.getFullYear()}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    }
+
     login(id: string, password: string) {
         return this._auth.signInWithEmailAndPassword(id, password).catch(this.getHandleError(this._dialog, this._snackbar));
     }

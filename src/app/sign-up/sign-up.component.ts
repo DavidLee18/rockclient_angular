@@ -73,7 +73,7 @@ export class SignUpComponent implements OnInit {
         password: this.form.get('pass').value,
         name: this.form.get('name').value,
         mobile: this.form.get('mobile').value,
-        birthDate: this.form.get('birthDate').value,
+        birthDate: RockService.normalizeDateToString(new Date(this.form.get('birthDate').value)),
         sex: this.form.get('sex').value,
         campus: this.form.get('campus').value,
         address: this.form.get('address').value,

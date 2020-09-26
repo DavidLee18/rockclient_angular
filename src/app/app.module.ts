@@ -8,7 +8,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LoginComponent, LoginBottomSheet } from './login/login.component';
 import { MatBottomSheetModule } from "@angular/material/bottom-sheet";
 import { MatButtonModule } from "@angular/material/button";
-import { MatNativeDateModule, MAT_DATE_LOCALE } from "@angular/material/core";
+import { DateAdapter, MatNativeDateModule, MAT_DATE_LOCALE } from "@angular/material/core";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatDividerModule } from "@angular/material/divider";
 import { MatIconModule } from "@angular/material/icon";
@@ -46,6 +46,7 @@ import { YouthModule } from "./youth/youth.module";
 import { SemiSignUpComponent } from './semi-sign-up/semi-sign-up.component';
 import { MatStepperModule } from '@angular/material/stepper';
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
+import { MatMomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 
 registerLocaleData(ko.default, 'ko', koExtra.default);
 
@@ -86,6 +87,7 @@ registerLocaleData(ko.default, 'ko', koExtra.default);
     MatMenuModule,
     AngularFireAuthModule,
     MatDatepickerModule,
+    MatMomentDateModule,
     MatNativeDateModule,
     MatSelectModule,
     MatRadioModule,
@@ -108,6 +110,7 @@ registerLocaleData(ko.default, 'ko', koExtra.default);
     { provide: MAT_DATE_LOCALE, useValue: 'ko-KR' },
     { provide: LOCALE_ID, useValue: 'ko' },
     { provide: STEPPER_GLOBAL_OPTIONS, useValue: { showError: true } },
+    { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } },
   ],
   bootstrap: [AppComponent]
 })
