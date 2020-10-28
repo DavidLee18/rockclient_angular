@@ -15,10 +15,10 @@ import { FormControl } from '@angular/forms';
 export class LeadersComponent implements OnInit {
   readonly campuses = [
     "강변", "강북", "강원",
-    "남서울", "대학로", "서바다",
-    "신촌", "인성경", "인천",
-    "천안", "필레오", "해외캠퍼스",
-    "예배당", "새내기", "중등부",
+    "대학로", "서바다", "신서울",
+    "인성경", "인천", "천안",
+    "필레오", "해외캠퍼스", "예배당",
+    "새내기", "중등부",
   ];
   readonly pastures = Array.from({length: 8}, (_, i) => `${i + 1}목장`);
   loggedIn = this._service.loggedIn;
