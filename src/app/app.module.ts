@@ -47,6 +47,7 @@ import { SemiSignUpComponent } from './semi-sign-up/semi-sign-up.component';
 import { MatStepperModule } from '@angular/material/stepper';
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { MatMomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
+import { MatExpansionModule } from "@angular/material/expansion";
 
 registerLocaleData(ko.default, 'ko', koExtra.default);
 
@@ -98,6 +99,7 @@ registerLocaleData(ko.default, 'ko', koExtra.default);
     MatAutocompleteModule,
     MatProgressSpinnerModule,
     MatStepperModule,
+    MatExpansionModule,
   ],
   entryComponents: [
     LoginBottomSheet,

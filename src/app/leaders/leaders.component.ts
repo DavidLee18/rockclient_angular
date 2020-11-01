@@ -12,13 +12,13 @@ import { FormControl } from '@angular/forms';
   templateUrl: './leaders.component.html',
   styleUrls: ['./leaders.component.css']
 })
-export class LeadersComponent implements OnInit {
+export class LeadersComponent {
   readonly campuses = [
     "강변", "강북", "강원",
-    "대학로", "서바다", "신서울",
-    "인성경", "인천", "천안",
-    "필레오", "해외캠퍼스", "예배당",
-    "새내기", "중등부",
+    "남서울", "대학로", "서바다",
+    "신서울", "신촌", "인성경",
+    "인천", "천안", "필레오",
+    "해외캠퍼스", "예배당", "새내기", "중등부",
   ];
   readonly pastures = Array.from({length: 8}, (_, i) => `${i + 1}목장`);
   loggedIn = this._service.loggedIn;
@@ -27,8 +27,6 @@ export class LeadersComponent implements OnInit {
   selectedCampus = '';
 
   constructor(private _service: RockService, private _router: Router, private _snackbar: MatSnackBar, private _bSheet: MatBottomSheet) {}
-
-  ngOnInit() {}
 
   logout() { this._service.logout(); this._router.navigateByUrl('/login'); }
 
