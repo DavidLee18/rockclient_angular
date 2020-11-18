@@ -6,6 +6,7 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { environment } from '../environments/environment'
 
 export enum Grade { member = "MEMBER", leader = "LEADER", mission = "MISSION", assistant = "GANSA", admin = "ADMIN" }
 
@@ -115,7 +116,7 @@ const routeNames = [
 //TODO: multicast observables
 @Injectable({ providedIn: "root" })
 export class RockService {
-    private readonly root = 'http://cba.sungrak.or.kr:9000';
+    private readonly root = environment.production ? 'https://cba.sungrak.or.kr:9000' : 'http://cba.sungrak.or.kr:9000';
     private uid: Observable<string>;
     private readonly headerBasic = {
         'Authorization': 'Basic YWRtaW46ZGh3bHJybGVoISEh',
