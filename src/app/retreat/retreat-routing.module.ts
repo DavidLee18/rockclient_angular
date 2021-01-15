@@ -8,6 +8,7 @@ import { RetreatStatisticsComponent } from './retreat-statistics/retreat-statist
 import { RetreatRegisterComponent } from './retreat-register/retreat-register.component';
 import { AuthGuard } from '../auth.guard';
 import { DiscardChangeGuard } from '../discard-change.guard';
+import { RetreatMessagesComponent } from './retreat-messages/retreat-messages.component';
 
 const retreatRoutes: Routes = [{
   path: 'retreat', component: RetreatComponent, canActivate: [AuthGuard], canActivateChild: [AuthGuard],
@@ -15,6 +16,7 @@ const retreatRoutes: Routes = [{
     { path: '', component: RetreatInfoComponent, },
     { path: 'statistics', component: RetreatStatisticsComponent, },
     { path: 'register', component: RetreatRegisterComponent, canDeactivate: [DiscardChangeGuard] },
+    { path: 'messages', component: RetreatMessagesComponent, },
   ]
 }];
 

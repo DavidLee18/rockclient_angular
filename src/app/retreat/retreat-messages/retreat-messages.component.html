@@ -1,0 +1,44 @@
+<mat-toolbar>
+    <button mat-icon-button (click)="nav.toggle()">
+        <mat-icon>menu</mat-icon>
+    </button>
+    <span>수련회 Q&A | 공지</span>
+    <span class="spacer"></span>
+    <mat-spinner diameter="30" stroke-width="5" *ngIf="(messages | async)?.length == 0 || (noties | async)?.length == 0"></mat-spinner>
+    <button mat-icon-button (click)="openSend()"><mat-icon>create</mat-icon></button>
+    <button mat-icon-button [matMenuTriggerFor]="account"><mat-icon [class.grey]="!(loggedIn | async)">account_circle</mat-icon></button>
+    <mat-menu #account="matMenu">
+        <ng-template matMenuContent>
+            <button mat-menu-item disabled>{{(loggedIn | async) ? "로그인 됨" : "로그인 안 됨"}}</button>
+            <button mat-menu-item [routerLink]="(loggedIn | async) ? null : '/login'" (click)="logout()">{{(loggedIn | async) ? "로그아웃하기" : "로그인하기"}}</button>
+        </ng-template>
+    </mat-menu>
+</mat-toolbar>
+<mat-sidenav-container>
+    <mat-sidenav #nav>
+        <mat-nav-list>
+            <mat-list-item *ngFor="let route of routes | async" [routerLink]="route.path" (click)="nav.close()">
+                <mat-icon *ngIf="route.icon">{{route?.icon}}</mat-icon>
+                <a mat-list-item>{{route.label}}</a>
+            </mat-list-item>
+        </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <mat-tab-group mat-align-tabs="center" dynamicHeight>
+            <mat-tab label="Q&A">
+                <div class="mat-elevation-z8 chat-bubble" [class.right]="message.isStaff == '공지'" *ngFor="let message of (messages | async)?.reverse()">
+                    <span [matTooltip]="message.uid">{{message.author + '(' + message.isStaff + ')'}}</span>
+                    <p>{{message.message}}</p>
+                    <span>{{message.time}}</span>
+                    <button mat-icon-button><mat-icon>reply</mat-icon></button>
+                    <button mat-icon-button><mat-icon>delete</mat-icon></button>
+                </div>
+            </mat-tab>
+            <mat-tab label="공지">
+                <section *ngFor="let noti of (noties | async)?.reverse()">
+                    <div class="mat-elevation-z8 chat-bubble" [innerHTML]="linkify(noti.message + '<br><br>' + noti.time)"></div>
+                </section>
+            </mat-tab>
+        </mat-tab-group>
+    </mat-sidenav-content>
+</mat-sidenav-container>

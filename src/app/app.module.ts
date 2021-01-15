@@ -29,7 +29,7 @@ import { AngularFireAuthModule } from '@angular/fire/auth';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { RetreatModule } from './retreat/retreat.module';
 import { AngularFireAuthGuardModule } from '@angular/fire/auth-guard';
-import { registerLocaleData } from '@angular/common';
+import { DatePipe, registerLocaleData } from '@angular/common';
 import * as ko from '@angular/common/locales/ko';
 import * as koExtra from '@angular/common/locales/extra/ko';
 import { LeadersComponent, MemberSearchBottomSheet } from './leaders/leaders.component';
@@ -40,7 +40,6 @@ import { LogInDialog } from './auth.guard';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from "@angular/material/chips";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
-import { ErrorDialog } from './rock.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { YouthModule } from "./youth/youth.module";
 import { SemiSignUpComponent } from './semi-sign-up/semi-sign-up.component';
@@ -62,7 +61,6 @@ registerLocaleData(ko.default, 'ko', koExtra.default);
     DiscardChangeDialog,
     LogInDialog,
     MemberSearchBottomSheet,
-    ErrorDialog,
     SemiSignUpComponent,
   ],
   imports: [
@@ -106,9 +104,9 @@ registerLocaleData(ko.default, 'ko', koExtra.default);
     DiscardChangeDialog,
     LogInDialog,
     MemberSearchBottomSheet,
-    ErrorDialog,
   ],
   providers: [
+    DatePipe,
     { provide: MAT_DATE_LOCALE, useValue: 'ko-KR' },
     { provide: LOCALE_ID, useValue: 'ko' },
     { provide: STEPPER_GLOBAL_OPTIONS, useValue: { showError: true } },

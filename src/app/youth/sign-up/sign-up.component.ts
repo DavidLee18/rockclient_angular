@@ -4,6 +4,7 @@ import { FormControl, Validators, ValidatorFn, AbstractControl, FormBuilder } fr
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-sign-up',
@@ -34,7 +35,8 @@ export class SignUpComponent implements OnInit {
     private _service: RockService,
     private _builder: FormBuilder,
     private _snackBar: MatSnackBar,
-    private _router: Router
+    private _router: Router,
+    private _date: DatePipe,
   ) {}
   
   get passAgain(): ValidatorFn {
@@ -56,7 +58,7 @@ export class SignUpComponent implements OnInit {
         password: this.form.get('pass').value,
         name: this.form.get('name').value,
         mobile: this.form.get('mobile').value,
-        birthDate: RockService.normalizeDateToString(new Date(this.form.get('birthDate').value)),
+        birthDate: this._date.transform(new Date(this.form.get('birthDate').value), 'YYYY-MM-dd'),
         sex: this.form.get('sex').value,
         address: this.form.get('address').value,
         team: this.form.get('pasture').value,

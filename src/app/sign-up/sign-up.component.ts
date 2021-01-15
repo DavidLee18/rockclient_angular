@@ -3,6 +3,7 @@ import { RockService } from '../rock.service';
 import { FormControl, Validators, ValidatorFn, AbstractControl, FormBuilder } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-sign-up',
@@ -33,8 +34,8 @@ export class SignUpComponent implements OnInit {
 
   readonly campuses = [
     '강변', '강북', '강원', 
-    '남서울', '대학로', '서바다', 
-    '신촌', '인성경', '인천', 
+    '대학로', '서바다', 
+    '신서울', '인성경', '인천', 
     '천안', '필레오', '해외캠퍼스', 
     '새내기', '예배당', '중등부',
   ];
@@ -49,6 +50,7 @@ export class SignUpComponent implements OnInit {
     private _snackBar: MatSnackBar,
     private _router: Router,
     private _route: ActivatedRoute,
+    private _date: DatePipe,
   ) {}
   
   get passAgain(): ValidatorFn {
@@ -73,7 +75,7 @@ export class SignUpComponent implements OnInit {
         password: this.form.get('pass').value,
         name: this.form.get('name').value,
         mobile: this.form.get('mobile').value,
-        birthDate: RockService.normalizeDateToString(new Date(this.form.get('birthDate').value)),
+        birthDate: this._date.transform(new Date(this.form.get('birthDate').value), 'YYYY-MM-dd'),
         sex: this.form.get('sex').value,
         campus: this.form.get('campus').value,
         address: this.form.get('address').value,

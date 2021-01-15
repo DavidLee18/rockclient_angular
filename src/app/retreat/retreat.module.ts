@@ -1,5 +1,5 @@
 import { NgModule, LOCALE_ID } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { RetreatRoutingModule } from './retreat-routing.module';
 import { RetreatComponent } from './retreat.component';
 import { MatButtonModule } from '@angular/material/button';
@@ -28,6 +28,13 @@ import { DiscardChangeDialog } from '../discard-change.guard';
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { MatGridListModule } from "@angular/material/grid-list";
 import { MatChipsModule } from '@angular/material/chips';
+import { MessageSendBottomSheet, RetreatMessagesComponent } from './retreat-messages/retreat-messages.component';
+import { MatTabsModule } from "@angular/material/tabs";
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
+import { TextFieldModule } from '@angular/cdk/text-field';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
+import { MatInputModule } from '@angular/material/input';
 
 
 
@@ -37,6 +44,8 @@ import { MatChipsModule } from '@angular/material/chips';
     RetreatInfoComponent,
     RetreatStatisticsComponent,
     RetreatRegisterComponent,
+    RetreatMessagesComponent,
+    MessageSendBottomSheet,
   ],
   imports: [
     CommonModule,
@@ -62,9 +71,20 @@ import { MatChipsModule } from '@angular/material/chips';
     MatProgressSpinnerModule,
     MatGridListModule,
     MatChipsModule,
+    MatTabsModule,
+    MatTooltipModule,
+    MatBottomSheetModule,
+    TextFieldModule,
+    MatInputModule,
+  ],
+  providers: [
+    DatePipe,
+    { provide: MAT_DATE_LOCALE, useValue: 'ko-KR' },
+    { provide: LOCALE_ID, useValue: 'ko' },
   ],
   entryComponents: [
     DiscardChangeDialog,
+    MessageSendBottomSheet,
   ]
 })
-export class RetreatModule { }
+export class RetreatModule {}

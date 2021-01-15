@@ -1,0 +1,16 @@
+.chat-bubble {
+    background-color: #e0e0e0;
+    color: black;
+    display: list-item;
+    align-items: center;
+    border-radius: 16px;
+    width: fit-content;
+    height: auto;
+    margin: 1em;
+    padding: 1em;
+    overflow: hidden;
+}
+.right {
+    background-color: darkslategray;
+    color: black;
+}

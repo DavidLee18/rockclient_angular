@@ -1,5 +1,5 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { LOCALE_ID, NgModule } from '@angular/core';
+import { CommonModule, DatePipe } from '@angular/common';
 
 import { YouthRoutingModule } from './youth-routing.module';
 import { SignUpComponent } from './sign-up/sign-up.component';
@@ -18,6 +18,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatSpinner, MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
 
 
 @NgModule({
@@ -39,5 +40,10 @@ import { MatMenuModule } from '@angular/material/menu';
     ReactiveFormsModule,
   ],
   entryComponents: [DiscardChangeDialog],
+  providers: [
+    DatePipe,
+    { provide: MAT_DATE_LOCALE, useValue: 'ko-KR' },
+    { provide: LOCALE_ID, useValue: 'ko' },
+  ]
 })
 export class YouthModule { }
