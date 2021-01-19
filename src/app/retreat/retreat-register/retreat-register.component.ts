@@ -21,7 +21,7 @@ export class RetreatRegisterComponent implements OnInit {
     retreat_gbs: ['', Validators.required],
     position: ['', Validators.required],
     gbs: ['', Validators.required],
-    lecture: [''],
+    lecture: ['', Validators.required],
     attendAll: [false],
     dayTime: this._builder.group({
       D1: [false], D2: [false], D3: [false]
@@ -31,10 +31,11 @@ export class RetreatRegisterComponent implements OnInit {
   registerSucceeded = false;
   registerInProgress = false;
   readonly lectures = [
-    "성락교회 캠퍼스 베뢰아의 사명",
-    "성장 그리고 사명",
-    "베뢰아 운동의 동역자",
-    "베뢰아인의 삶과 세상에서의 우리",
+    "새내기 (이슬기M)",
+    "20, 19학번 (정은정M)",
+    "18, 17학번 (윤은선M)",
+    "16, 15학번 (장진원M)",
+    "14학번 이상 (임재범M)"
   ];
   readonly retreat_gbses = [
     "A", "새내기", "C", "D",
@@ -121,7 +122,7 @@ export class RetreatRegisterComponent implements OnInit {
           retreatGbs: this.form.get('retreat_gbs').value,
           position: this.form.get('position').value,
           originalGbs: r ? undefined : this.form.get('gbs').value,
-          lectureHope: r ? undefined : this.form.get('lecture').value,
+          lectureHope: this.form.get('lecture').value,
           attendType: 'GBS',
           attendAll: Object.values(dt.controls).every(c => c.value),
           dayTimeList: Object.values(dt.controls).every(c => c.value) ? null

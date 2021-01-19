@@ -46,7 +46,7 @@
                     </mat-select>
                     <mat-error *ngIf="form.get('gbs').errors?.required">기존 GBS를 선택하세요</mat-error>
                 </mat-form-field>
-                <mat-form-field *ngIf="false" appearance="fill">
+                <mat-form-field appearance="fill" required>
                     <mat-label>선택식 강의</mat-label>
                     <mat-select formControlName="lecture">
                         <mat-option *ngFor="let option of lectures" [value]="option">{{option}}</mat-option>
