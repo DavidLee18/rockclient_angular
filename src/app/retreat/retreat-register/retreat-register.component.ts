@@ -35,7 +35,8 @@ export class RetreatRegisterComponent implements OnInit {
     "20, 19학번 (정은정M)",
     "18, 17학번 (윤은선M)",
     "16, 15학번 (장진원M)",
-    "14학번 이상 (임재범M)"
+    "14학번 이상 (임재범M)",
+    "봉사자"
   ];
   readonly retreat_gbses = [
     "A", "새내기", "C", "D",
