@@ -51,7 +51,7 @@ export class SignUpComponent implements OnInit {
   ngOnInit() {}
 
   signUp() {
-    if(this.toSubmit) {
+    if(this.toSubmit && this.form.valid) {
       this.signUpInProgress = true;
       const resume = {
         email: this.form.get('email').value,

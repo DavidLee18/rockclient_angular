@@ -68,7 +68,7 @@ export class SignUpComponent implements OnInit {
   }
 
   signUp() {
-    if(this.toSubmit) {
+    if(this.toSubmit && this.form.valid) {
       this.signUpInProgress = true;
       this._service.signUp({
         email: this.form.get('email').value,
