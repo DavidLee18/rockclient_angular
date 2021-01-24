@@ -61,11 +61,18 @@
         <div>
             <mat-form-field appearance="fill">
                 <mat-label>생년월일</mat-label>
+                <input matInput type="text" formControlName="birthDate" required>
+                <mat-hint>ex) 2020-02-28</mat-hint>
+                <mat-error *ngIf="form.get('birthDate').errors?.required">생년월일을 입력하세요</mat-error>
+                <mat-error *ngIf="form.get('birthDate').errors?.pattern">올바른 생년월일을 입력하세요</mat-error>
+            </mat-form-field> <!--
+            <mat-form-field appearance="fill">
+                <mat-label>생년월일</mat-label>
                 <input matInput [matDatepicker]="date" formControlName="birthDate" required>
                 <mat-datepicker-toggle matSuffix [for]="date"></mat-datepicker-toggle>
                 <mat-datepicker #date></mat-datepicker>
                 <mat-error *ngIf="form.get('birthDate').errors?.required">생년월일을 입력하세요</mat-error>
-            </mat-form-field>
+            </mat-form-field> -->
             <mat-form-field appearance="fill">
                 <mat-label>캠퍼스</mat-label>
                 <mat-select formControlName="campus" required>
