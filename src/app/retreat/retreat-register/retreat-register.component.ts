@@ -44,7 +44,7 @@ export class RetreatRegisterComponent implements OnInit {
     "OJ", "EN", "자모GBS",
     "STAFF", "없음"
   ];
-  readonly positions = ["조원", "부조장", "조장", "봉사자"];
+  readonly positions = ["조원", "부조장", "조장", "봉사자", "없음"];
   readonly gbses = [
     "칼리지에센셜", "마태칼리지", "마가칼리지",
     "누가칼리지", "요한칼리지", "바울칼리지",
