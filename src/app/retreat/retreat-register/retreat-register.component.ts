@@ -21,7 +21,7 @@ export class RetreatRegisterComponent implements OnInit {
     retreat_gbs: ['', Validators.required],
     position: ['', Validators.required],
     gbs: ['', Validators.required],
-    lecture: ['', Validators.required],
+    lecture: [''],
     attendAll: [false],
     dayTime: this._builder.group({
       D1: [false], D2: [false], D3: [false]
@@ -112,6 +112,7 @@ export class RetreatRegisterComponent implements OnInit {
   logout() { this._service.logout(); this._router.navigateByUrl('/login'); }
 
   submit() {
+    this.form.updateValueAndValidity();
     if(this.form.valid) {
       this.registerInProgress = true;
       const registeredOrEdited = zip(this.retreatRegistered, this._uid).pipe(map(([r, uid]) => {
