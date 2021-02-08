@@ -14,7 +14,7 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent, canDeactivate: [AuthGuard] },
   { path: 'sign-up', component: SignUpComponent, canDeactivate: [DiscardChangeGuard] },
   { path: 'semi-sign-up', component: SemiSignUpComponent, canDeactivate: [DiscardChangeGuard], canActivate: [AuthGuard], data: { grade: Grade.assistant } },
-  { path: 'leaders', component: LeadersComponent, canActivate: [AuthGuard], data: {names: ['나진환', '이재현', '김다인', '유상건', '김진석']} },
+  { path: 'leaders', component: LeadersComponent, canActivate: [AuthGuard], data: {names: ['나진환', '이재현', '김다인', '유상건', '김진석', '황재필']} },
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: '**', component: NotFoundComponent },
 ];
