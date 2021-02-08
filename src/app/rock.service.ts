@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, of, zip } from 'rxjs';
-import { catchError, retry, map, concatAll, pluck } from 'rxjs/operators';
+import { catchError, retry, map, concatAll, pluck, share } from 'rxjs/operators';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { AngularFireDatabase } from '@angular/fire/database';
@@ -125,6 +125,7 @@ const routeNames = [
 export class RockService {
     private readonly root = 'https://cba.sungrak.or.kr:9000';
     private uid: Observable<string>;
+    private auth: Observable<any>;
     private readonly headerBasic = {
         'Authorization': 'Basic YWRtaW46ZGh3bHJybGVoISEh',
         'Content-Type': 'application/json'
@@ -136,7 +137,8 @@ export class RockService {
     }
 
     constructor(private _http: HttpClient, private _auth: AngularFireAuth, private _db: AngularFireDatabase) {
-        this.uid = _auth.authState.pipe(map(user => user?.uid));
+        this.auth = _auth.authState.pipe(share());
+        this.uid = this.auth.pipe(map(user => user?.uid), share());
     }
 
     static nonNull(object: any) {
@@ -149,7 +151,7 @@ export class RockService {
 
     sendEmail(email: string) { return this._auth.sendPasswordResetEmail(email).catch(this.handleError); }
 
-    get loggedIn() { return this._auth.authState.pipe(map(user => (user && !user.isAnonymous) ?? false)); }
+    get loggedIn() { return this.auth.pipe(map(user => (user && !user.isAnonymous) ?? false)); }
 
     logout() { return this._auth.signOut().catch(this.handleError); }
 
@@ -223,7 +225,7 @@ export class RockService {
 
     get MyInfo(): Observable<Info> {
         return this.uid.pipe(map((uid) => {
-            return uid == null || uid == undefined ? of(undefined) : this._http.get<Info>(`${this.root}/members/info?uid=${uid}`, {
+            return !uid ? of(undefined) : this._http.get<Info>(`${this.root}/members/info?uid=${uid}`, {
                 headers: {
                     'Accept': 'application/json',
                     ...this.headerBasic
